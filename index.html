@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.876</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.877</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -278,14 +278,14 @@ const PUNCH=[['arp','ARP','--l3',0],['counter','COUNTER','--l3',0],['bass','REES
 const ARR=[['glide','Glide'],['curve','Curve'],['fan','Fan out'],['coll','Collapse'],['sfan','Slow fan'],['fall','Fall'],['rise','Rise'],['late','One late'],['mix','Mix']];
 const FADERS=[['bpm','TEMPO','D',60,180,1],['swing','SWING','D'],['pump','PUMP','D'],['dvol','DRUM VOLUME','X'],['chd','CHORDS','X'],['mot','MOTION','S'],['space','SPACE','S'],['det','DETUNE','S'],['bloom','BLOOM','S'],['spread','GLIDE SPREAD','S'],['slen','STAB LENGTH','S'],['stag','LINES ONE BY ONE','S'],['drv','DRIVE','S'],['vol','VOLUME','S']];
 const SOUNDS={saw:['Supersaw',{wave:'sawtooth',uni:5,det:.45,bright:1,lq:.8}],raw:['Raw saw',{wave:'sawtooth',uni:1,det:0,bright:1,lq:1.4}],poly:['Analog poly',{wave:'sawtooth',uni:2,det:.14,bright:.5,lq:4}],
-  pwm:['PWM',{wave:'square',uni:2,det:.22,bright:.7,lq:1.2}],rsq:['Raw square',{wave:'square',uni:1,det:0,bright:.8,lq:1.4}],brass:['Brass',{wave:'sawtooth',uni:2,det:.08,bright:.38,lq:5,ftype:'clean'}],
-  warm:['Warm pad',{wave:'sawtooth',uni:3,det:.22,bright:.3,lq:.5}],glass:['Glass',{wave:'triangle',uni:3,det:.18,bright:1,lq:.8,ftype:'clean'}],
-  hollow:['Hollow',{wave:'square',uni:3,det:.3,bright:.55,lq:1.6,ftype:'ladder'}],strings:['Strings',{wave:'sawtooth',uni:7,det:.6,bright:.6,lq:.6,ftype:'clean'}],growl:['Growl',{wave:'sawtooth',uni:3,det:.95,bright:.28,lq:3}],
+  pwm:['PWM',{wave:'square',uni:2,det:.22,bright:.7,lq:1.2}],rsq:['Raw square',{wave:'square',uni:1,det:0,bright:.8,lq:1.4}],brass:['Brass',{wave:'sawtooth',uni:2,det:.08,bright:.38,lq:5}],
+  warm:['Warm pad',{wave:'sawtooth',uni:3,det:.22,bright:.3,lq:.5}],glass:['Glass',{wave:'triangle',uni:3,det:.18,bright:1,lq:.8}],
+  hollow:['Hollow',{wave:'square',uni:3,det:.3,bright:.55,lq:1.6}],strings:['Strings',{wave:'sawtooth',uni:7,det:.6,bright:.6,lq:.6}],growl:['Growl',{wave:'sawtooth',uni:3,det:.95,bright:.28,lq:3}],
   rhodes:['Rhodes',{wave:'triangle',pw:'ep',uni:2,det:.09,bright:.42,lq:.7,strike:1.6,dec:1.1,trem:.55}],
-  wurli:['Wurli',{wave:'square',pw:'reed',uni:2,det:.05,bright:.3,lq:.9,strike:1.3,dec:.8,trem:.35,ftype:'ladder'}],
-  mellow:['Mellow analog',{wave:'sawtooth',uni:2,det:.12,bright:.18,lq:.9,soft:1,ftype:'ladder'}],
-  dusk:['Dusk pad',{wave:'triangle',uni:4,det:.3,bright:.25,lq:.5,soft:1,ftype:'ladder'}],
-  deep:['Deep stab',{wave:'sawtooth',uni:3,det:.2,bright:.22,lq:2.2,ftype:'ladder'}]};
+  wurli:['Wurli',{wave:'square',pw:'reed',uni:2,det:.05,bright:.3,lq:.9,strike:1.3,dec:.8,trem:.35}],
+  mellow:['Mellow analog',{wave:'sawtooth',uni:2,det:.12,bright:.18,lq:.9,soft:1}],
+  dusk:['Dusk pad',{wave:'triangle',uni:4,det:.3,bright:.25,lq:.5,soft:1}],
+  deep:['Deep stab',{wave:'sawtooth',uni:3,det:.2,bright:.22,lq:2.2}]};
 const LEADS={gsaw:['Glide saw',{w1:'sawtooth',w2:'sawtooth',d2:14,g2:1,fb:900,fe:5000,fd:.25,q:3,gl:.09,vib:6,vd:.25,sw:0,st:.05,at:.004}],
   whistle:['Whistle',{w1:'sine',w2:'triangle',d2:1200,g2:.15,fb:6000,fe:0,fd:.2,q:.7,gl:.12,vib:14,vd:.3,sw:0,st:.05,at:.04}],
   square:['Square',{w1:'square',w2:'square',d2:9,g2:.8,fb:2200,fe:1500,fd:.2,q:1,gl:.07,vib:5,vd:.3,sw:0,st:.05,at:.004}],
@@ -301,29 +301,30 @@ const KITS={classic:['Classic',{k0:165,k1:42,kd:.12,kl:.32,kv:1,kc:0,sf:1900,sl:
   lofi:['Lo-fi',{k0:115,k1:48,kd:.1,kl:.3,kv:.85,kc:0,sf:1200,sl:.2,st:160,sv:.75,hf:4800,hl:.05,hv:.6,ftype:'ladder'}],
   brush:['Brush',{k0:95,k1:50,kd:.08,kl:.28,kv:.6,kc:0,sf:3800,sl:.34,st:0,sv:.55,hf:6000,hl:.09,hv:.5}]};
 const KIT=()=>(KITS[P.kit]||KITS.classic)[1];
-const PRESETS={lines:['Classic lines',{snd:'saw',asnd:'saw',lead:'gsaw',ens:'off',vce:'close',tape:'off',drv:.2,ftype:'clean'}],
-  strings:['Wide strings',{snd:'strings',asnd:'glass',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15}],
-  juno:['Warm Juno',{snd:'poly',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'off',drv:.3,ftype:'ladder'}],
-  lofi:['Lo-fi tape',{snd:'warm',asnd:'bell',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.35}],
-  glass:['Glass night',{snd:'glass',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15}],
-  grit:['Gritty',{snd:'growl',asnd:'saw',lead:'acid',ens:'off',vce:'close',tape:'off',drv:.75,ftype:'clean'}],
-  brass:['Brass anthem',{snd:'brass',asnd:'pluck',lead:'fifths',ens:'light',vce:'open',tape:'off',drv:.4}],
-  hollow:['Hollow tape',{snd:'hollow',asnd:'glass',lead:'whistle',ens:'off',vce:'close',tape:'on',drv:.25}]};
+const PRESETS={
+  lines:['Classic lines',{snd:'saw',asnd:'saw',lead:'gsaw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.5,space:.6,det:.32,bloom:.4}],
+  strings:['Wide strings',{snd:'strings',asnd:'glass',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.55,space:.72,det:.26,bloom:.45}],
+  juno:['Warm Juno',{snd:'poly',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'off',drv:.28,ftype:'ladder'},{mot:.45,space:.55,det:.18,bloom:.3}],
+  lofi:['Lo-fi tape',{snd:'warm',asnd:'bell',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3}],
+  glass:['Glass night',{snd:'glass',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.5,space:.78,det:.18,bloom:.35}],
+  grit:['Gritty',{snd:'growl',asnd:'saw',lead:'acid',ens:'light',vce:'close',tape:'off',drv:.6,ftype:'clean'},{mot:.55,space:.45,det:.4,bloom:.4}],
+  brass:['Brass anthem',{snd:'brass',asnd:'pluck',lead:'fifths',ens:'light',vce:'open',tape:'off',drv:.35,ftype:'clean'},{mot:.5,space:.55,det:.22,bloom:.35}],
+  hollow:['Hollow tape',{snd:'hollow',asnd:'glass',lead:'whistle',ens:'light',vce:'close',tape:'on',drv:.22,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3}]};
 /* laid-back presets */
-Object.assign(PRESETS,{lounge:['Rhodes lounge',{snd:'rhodes',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.32,ftype:'ladder'},{mot:.3,space:.7,chd:.8,lin:'off',filt:.85},[]],
-  wurli:['Late night Wurli',{snd:'wurli',asnd:'pluck',lead:'whistle',ens:'off',vce:'open',tape:'on',drv:.3},{mot:.25,space:.55,lin:'off'},[]],
-  mellow:['Mellow drive',{snd:'mellow',asnd:'glass',lead:'square',ens:'light',vce:'open',tape:'off',drv:.2},{mot:.35,space:.65,lin:'swell'},[]],
-  dusk:['Sunday dusk',{snd:'dusk',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.15},{mot:.45,space:.8,lin:'swell'},[]],
-  deep:['Deep dub',{snd:'deep',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'on',drv:.3},{mot:.25,space:.85,lin:'off',srhy:'off',filt:.42},['stab','bass','beat']]});
+Object.assign(PRESETS,{lounge:['Rhodes lounge',{snd:'rhodes',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.4,space:.7,chd:.8,lin:'off',filt:.85,det:.08,bloom:.15}],
+  wurli:['Late night Wurli',{snd:'wurli',asnd:'pluck',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.28,ftype:'ladder'},{mot:.38,space:.58,lin:'off',filt:.8,det:.06,bloom:.15}],
+  mellow:['Mellow drive',{snd:'mellow',asnd:'glass',lead:'square',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'ladder'},{mot:.45,space:.65,lin:'swell',filt:.75,det:.16,bloom:.3}],
+  dusk:['Sunday dusk',{snd:'dusk',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.15,ftype:'ladder'},{mot:.5,space:.8,lin:'swell',filt:.75,det:.22,bloom:.35}],
+  deep:['Deep dub',{snd:'deep',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'on',drv:.28,ftype:'ladder'},{mot:.35,space:.85,lin:'off',srhy:'off',filt:.5,det:.18,bloom:.25},['stab','bass','beat']]});
 /* the four old scenes are presets too: they also set motion, space and a few buttons */
-Object.assign(PRESETS,{mirage:['Mirage',{snd:'saw',asnd:'saw',ens:'off',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.4,chd:.85,space:.7,lin:'off'},[]],
-  lift:['Lift',{snd:'strings',asnd:'glass',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'clean'},{mot:.6,chd:.75,space:.6,lin:'swell',srhy:'fsweep'},['counter','stab']],
-  full:['Full',{snd:'saw',asnd:'pluck',ens:'light',vce:'close',tape:'off',drv:.35,ftype:'clean'},{mot:.55,chd:.65,space:.45,lin:'swell',srhy:'fpump'},['arp','bass','beat','stab']],
-  wild:['Wild',{snd:'growl',asnd:'saw',ens:'deep',vce:'open',tape:'off',drv:.55,ftype:'clean'},{mot:.95,chd:.7,space:.5,lin:'mix',srhy:'fgate'},['arp','bass','beat','stab']]});
+Object.assign(PRESETS,{mirage:['Mirage',{snd:'saw',asnd:'saw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.45,chd:.85,space:.7,lin:'off',det:.3,bloom:.4},[]],
+  lift:['Lift',{snd:'strings',asnd:'glass',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'clean'},{mot:.6,chd:.75,space:.6,lin:'swell',srhy:'fsweep',det:.26,bloom:.4},['counter','stab']],
+  full:['Full',{snd:'saw',asnd:'pluck',ens:'light',vce:'close',tape:'off',drv:.32,ftype:'clean'},{mot:.55,chd:.65,space:.45,lin:'swell',srhy:'fpump',det:.32,bloom:.4},['arp','bass','beat','stab']],
+  wild:['Wild',{snd:'growl',asnd:'saw',ens:'deep',vce:'open',tape:'off',drv:.5,ftype:'clean'},{mot:.75,chd:.7,space:.5,lin:'mix',srhy:'fgate',det:.42,bloom:.45},['arp','bass','beat','stab']]});
 /* your own presets: four slots kept on this device */
 const MYP=(()=>{try{return JSON.parse(localStorage.getItem('gliss-mypre')||'[]')}catch(e){return []}})();
-const MYX=['mot','space','chd','filt','res','srhy','lin'];
-function myPresetsIn(){MYP.forEach((m,i)=>{if(m)PRESETS['my'+(i+1)]=['My preset '+(i+1),m.snd,m.ex,[]]})}
+const MYX=['mot','space','chd','filt','res','srhy','lin','det','bloom'];
+function myPresetsIn(){MYP.forEach((m,i)=>{if(m)PRESETS['my'+(i+1)]=['My preset '+(i+1),m.snd,m.ex]})}
 const PLV={lounge:1,hollow:.8,mellow:.3,mirage:.7,juno:.65,strings:.6,dusk:.38,wild:.38};
 myPresetsIn();MYP.forEach((m,i)=>{if(m)PLV['my'+(i+1)]=m.lv});
 const CYC={preset:['SOUND PRESET',[['custom','Custom'],...Object.keys(PRESETS).map(k=>[k,PRESETS[k][0]])]],snd:['CHORD SOUND',Object.keys(SOUNDS).map(k=>[k,SOUNDS[k][0]])],lead:['LEAD SOUND',Object.keys(LEADS).map(k=>[k,LEADS[k][0]])],lmode:['LEAD PLAYS',[['pluck','Pluck'],['glide','Glide']]],key:['KEY',NOTE.map((n,i)=>[i,n])],
@@ -472,7 +473,9 @@ function init(){
     L.pb.offset.value=0;L.pb.start();L.o1.connect(L.f);L.o2.connect(L.g2);L.g2.connect(L.f);const lo=g(.34);L.f.connect(L.a);L.a.connect(lo);lo.connect(A.strum);
     L.vib.connect(L.vg);[L.o1,L.o2].forEach(o=>{L.vg.connect(o.detune);L.pb.connect(o.detune);A.bend.connect(o.detune)})}
   A.sv=[];for(let i=0;i<10;i++){const o=osc('triangle',440),gg=g(0);o.connect(gg);gg.connect(A.strum);A.sv.push({o,g:gg})}
-  A.bkS=g(1);A.synth.connect(A.bkS);A.bkS.connect(A.f1);A.f1.connect(A.f2);A.f2.connect(A.fr);A.fr.connect(A.fc);A.fc.connect(A.sOut);A.sOut.connect(A.master);
+  A.bkS=g(1);A.synth.connect(A.bkS);A.bkS.connect(A.f1);A.f1.connect(A.f2);A.f2.connect(A.fr);A.fr.connect(A.fc);A.mud=ctx.createBiquadFilter();A.mud.type='peaking';A.mud.frequency.value=300;A.mud.Q.value=.9;A.mud.gain.value=-3;A.fc.connect(A.mud);A.mud.connect(A.sOut);
+  /* life: the main filter drifts very slowly up and down, so held chords never sound frozen */
+  {const lfo=osc('sine',.055),lg=g(110);lfo.connect(lg);lg.connect(A.f1.detune);lg.connect(A.f2.detune)}A.sOut.connect(A.master);
   /* ensemble: two slowly wobbling short delays, left and right, mixed under the dry chords */
   {A.eW=g(0);A.fc.connect(A.eW);const dl=ctx.createDelay(.05),dr=ctx.createDelay(.05);dl.delayTime.value=.009;dr.delayTime.value=.011;
    const lf=osc('sine',.62),lf2=osc('sine',.93);A.eD=g(0);A.eD2=g(0);const inv=g(-1);lf.connect(A.eD);lf2.connect(A.eD2);A.eD.connect(dl.delayTime);A.eD.connect(inv);inv.connect(dr.delayTime);A.eD2.connect(dr.delayTime);
@@ -580,8 +583,8 @@ function applyVary(t,stagger){
     if(L.nodes.sg)L.nodes.sg.gain.setTargetAtTime(on('shim')&&(i===ur[3]||i===ur[2])?.16:0,t,.15)});
 }
 function applyDetune(){
-  if(!ctx)return;const t=ctx.currentTime,sm=on('smear'),cents=P.det*60*(sm?2.6:1)+(sm?14:0),drift=P.det*16+(sm?55:0);
-  LN.forEach(L=>{if(!L.nodes)return;const m=L.low?.45:1;L.nodes.oscs.forEach(x=>{x.o.detune.setTargetAtTime(x.pos*cents*m,t,.09);x.bg.gain.setTargetAtTime(x.pos*P.bloom*45*m,t,.09)});L.nodes.lg.gain.setTargetAtTime(drift*m,t,.12)});
+  if(!ctx)return;const t=ctx.currentTime,sm=on('smear'),cents=P.det*34*(sm?3.5:1)+(sm?14:0),drift=P.det*6+(sm?55:0);
+  LN.forEach(L=>{if(!L.nodes)return;const m=L.low?.18:1;L.nodes.oscs.forEach(x=>{x.o.detune.setTargetAtTime(x.pos*cents*m,t,.09);x.bg.gain.setTargetAtTime(x.pos*P.bloom*26*m,t,.09)});L.nodes.lg.gain.setTargetAtTime(drift*m,t,.12)});
   const rd=10+P.det*26;A.b1.detune.setTargetAtTime(-rd,t,.1);A.b2.detune.setTargetAtTime(rd,t,.1);
 }
 /* one pulse cycle on a parameter: swell up, fall away, or up and down */
@@ -594,7 +597,7 @@ const PPER={slow:[32,16,32,16,32,16],med:[8,4,16,4,16,8],fast:[4,2,8,2,8,4]};
 let varKey='';
 function pulseStep(b,t,sd,s){
   const D=P.pulse,vs=on('vswell'),vp=on('vpulse'),key=(vs?'s':'')+(vp?'p':'')+(on('low')?'l':'')+(on('soft')?'f':'')+(stabAmt>.5?'b':'')+'f'+flav(cur),ur=upRank();
-  const fv=flav(cur),top=2200*Math.pow(6,P.chd)*(.25+.75*(P.bright||1))*(on('low')?.3:1)*(on('soft')?.3:1)*(fv>0?1.6:fv<0?.4:1);
+  const fv=flav(cur),top=2200*Math.pow(6,P.chd)*(.42+.58*(P.bright||1))*(on('low')?.3:1)*(on('soft')?.3:1)*(fv>0?1.6:fv<0?.4:1);
   /* when a variation switches, drop the shapes already scheduled so the change is heard right away */
   if(key!==varKey){varKey=key;IDX.forEach(i=>{const n=LN[i].nodes;[n.pg.gain,n.lf.frequency,A.lbl[i].offset].forEach(p=>hold(p,t));
     n.pg.gain.setTargetAtTime(1,t,.05);n.lf.frequency.setTargetAtTime(top,t,.05);A.lbl[i].offset.setTargetAtTime(0,t,.05)})}
@@ -620,7 +623,7 @@ function soundStrike(t){if(!ctx||!A.stk)return;const d=SOUNDS[P.snd][1],G=A.stk.
   if(d.strike){hold(G,t);G.setTargetAtTime(d.strike,t,.004);G.setTargetAtTime(.8,t+.03,d.dec);hold(F,t);F.setTargetAtTime(7500,t,.004);F.setTargetAtTime(2400,t+.03,d.dec*.8)}
   else if(d.soft){hold(G,t);G.setTargetAtTime(.5,t,.03);G.setTargetAtTime(1,t+.08,.45)}}
 /* the two low chord lines step back while the reese plays, so the bass stays clean */
-function lowBusSet(t){if(!ctx)return;const cl=.55*(.12+.88*Math.pow(P.chd,1.4));A.lowBus.gain.setTargetAtTime(cl/.75*(on('bass')?.45:1),t,.08)}
+function lowBusSet(t){if(!ctx)return;const cl=.55*(.12+.88*Math.pow(P.chd,1.4));A.lowBus.gain.setTargetAtTime(cl/.95*(on('bass')?.45:1),t,.08)}
 function momentsApply(){if(!ctx)return;const t=ctx.currentTime;lowBusSet(t);applyDetune();applyVary(t);A.cm.gain.setTargetAtTime(on('nochd')?0:on('soft')?.4:1,t,on('soft')?.25:.07);hold(A.fc.frequency,t);A.fc.frequency.setTargetAtTime(on('close')?300:18000,t,on('close')?.14:.6)}
 /* strum plate: every note you slide across is plucked and rings out */
 function strumLad(){if(pool.length<3)setChord(cur);const pcs=pool.map(m=>m%12),l=[];for(let m=60;m<=93;m++)if(pcs.includes(m%12))l.push(m+(P.loct||0));return l}
@@ -1353,7 +1356,7 @@ function build(){
           P.preset='my'+i;save();UIR.forEach(f=>f());$('#pick').classList.remove('open');say('Saved as My preset '+i+'.')})}
       $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
       $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P[k]=typeof P[k]==='number'?+x.dataset.v:x.dataset.v==='true'?true:x.dataset.v==='false'?false:x.dataset.v;show();
-        if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true);applyMotion();applyMacros();momentsApply()}if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
+        if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);if(pr[3]){Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true)}applyMotion();applyMacros();applyDetune();momentsApply()}if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
         if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(k==='eco'){applyFx();buildLines();say(ecoOn()?'Eco mode is on: lighter on the phone.':'Full quality.')}if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
         save();paint();$('#pick').classList.remove('open')});
     });show();UIR.push(show)});
@@ -1667,7 +1670,7 @@ window.doInstall=doInstall;
 function quickStart(){$('#pbox').innerHTML='<h2>Start a jam<button class="chip" id="pclose">Just play</button></h2>'+(canInstall()?'<button class="chip on" id="inst" style="height:48px;font-size:15px">⬇ Install Gliss as an app<small style="display:block;font-size:10px;font-weight:500;opacity:.8">Full screen, its own icon, works offline</small></button>':'')+'<div class="vibes">'+VIBES.map((v,i)=>`<button data-i="${i}"><b>${v[0]}</b><small>${v[1]}</small></button>`).join('')+'</div>';
   $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));if($('#inst'))$('#inst').addEventListener('click',doInstall);
   $('#pbox .vibes').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;const [n,,set,pre,beat,extra]=VIBES[+x.dataset.i];
-    Object.assign(P,set);if(!ctx)init();P.preset=pre;applySnd(PRESETS[pre][1]);P.mxL=PLV[pre]??.5;if(PRESETS[pre][2])Object.assign(P,PRESETS[pre][2]);applyMotion();Object.keys(latched).forEach(k=>delete latched[k]);if(beat)latched.beat=true;(extra||[]).forEach(k=>latched[k]=true);
+    Object.assign(P,set);if(!ctx)init();P.preset=pre;applySnd(PRESETS[pre][1]);P.mxL=PLV[pre]??.5;if(PRESETS[pre][2])Object.assign(P,PRESETS[pre][2]);applyMotion();applyDetune();Object.keys(latched).forEach(k=>delete latched[k]);if(beat)latched.beat=true;(extra||[]).forEach(k=>latched[k]=true);
     applyMacros();momentsApply();UIR.forEach(f=>f());save();$('#pick').classList.remove('open');if(!playing){cur=0;start()}else{queued=0;qAt=-1;preStarted=false}paint();say(n+'. Tap the pads to play.')})}
 window.quickStart=quickStart;
 try{if(!localStorage.getItem('gliss-tour'))setTimeout(()=>tour(0),400);else setTimeout(quickStart,300)}catch(e){}
