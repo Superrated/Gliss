@@ -211,7 +211,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.893</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.894</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -281,7 +281,7 @@ const FILLS=[['Pop lift',[[0,'add9'],[7,'add9'],[9,'m9'],[5,'maj9'],[2,'m11'],[7
 SETS.push({n:'Deep',c:[[0,'m11'],[0,'m9'],[8,'lyd'],[10,'sus'],[5,'m9'],[3,'maj9']]});
 const saveMySets=()=>{try{localStorage.setItem('gliss-sets',JSON.stringify(SETS.slice(MYSET0).map(x=>x.c)))}catch(e){}};
 const PUNCH=[['arp','ARP','--l3',0],['counter','COUNTER','--l3',0],['bass','REESE','--l3',0],['beat','BEAT','--l3',0],['echo','ECHO','--lead',0],['wash','WASH','--lead',0],
-  ['frz','FREEZE','--l4',1],['oct','OCTAVE UP','--l4',1],['smear','SMEAR','--l4',1],['close','DARKEN','--l4',1],['stab','STAB','--l4',1],['soft','SOFTER','--l4',1],['nochd','NO CHORDS','--l4',1],['spark','SPARK','--l3',0],
+  ['frz','FREEZE','--l4',1],['oct','OCTAVE UP','--l4',1],['smear','SMEAR','--l4',1],['build','BUILD','--l4',1],['stab','STAB','--l4',1],['soft','SOFTER','--l4',1],['nochd','NO CHORDS','--l4',1],['spark','SPARK','--l3',0],
   ['low','LOW ONLY','--l2',2],['vswell','SWELL','--l2',2],['vpulse','PULSE TOP','--l2',2],['stag','ONE BY ONE','--l2',2],['shim','SHIMMER','--l2',2],['pedal','PEDAL','--l2',2],['bloomb','BREATHE','--lead',2]];
 const ARR=[['glide','Glide'],['curve','Curve'],['fan','Fan out'],['coll','Collapse'],['sfan','Slow fan'],['fall','Fall'],['rise','Rise'],['late','One late'],['mix','Mix']];
 const FADERS=[['bpm','TEMPO','D',60,180,1],['swing','SWING','D'],['pump','PUMP','D'],['dvol','DRUM VOLUME','X'],['chd','CHORDS','X'],['mot','MOTION','S'],['space','SPACE','S'],['det','DETUNE','S'],['bloom','BLOOM','S'],['spread','GLIDE SPREAD','S'],['slen','STAB LENGTH','S'],['stag','LINES ONE BY ONE','S'],['drv','DRIVE','S'],['vol','VOLUME','S']];
@@ -965,7 +965,7 @@ function schedStep(s,t,dur){
     }
   }
   if(loopSt==='rec'&&s===loop.start&&!loop.ev.length)loop.ev.push({o:0,pad:cur});
-  /* BUILD (gentle): the filter closes, then slowly opens with a soft noise rise; let go and it opens fully on the next bar */
+  buildStep(s,b,t);
   const D=P.drift,drift=(i,tt,c,tc)=>{if(i>=4)c*=.35;A.ld[i].offset.setTargetAtTime(c,tt,tc);trPush(TR.d[i],tt,c/100,tc)};
   if(D>0){
     if(b===0)for(let i=0;i<NL;i++){drift(i,t,0,.03);A.lvg[i].gain.setTargetAtTime(0,t,.05)}
@@ -1073,7 +1073,7 @@ function allOff(){Object.keys(latched).forEach(k=>delete latched[k]);Object.keys
 /* hold a button for a short explanation */
 const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and sound are on Shape › Arp & bass.',arp2:'A slower, softer arp in 1/8 notes.',counter:'A second line that answers the chords, moving a little after each change.',
   beat:'The drums. Tap to cycle: full beat, light beat (soft kick on the 1, quiet hats), off. Hold to play the beat only while held. Kit, fills and the step grid are on the Drums page.',bass:'The reese: a wide, detuned bass under the chords.',hops:'Chord notes scattered at random over the beat, left and right.',spark:'Bell notes that climb the chord, with a ping-pong echo.',
-  frz:'Freezes the chord: it keeps ringing while you choose the next one.',oct:'Moves the top of the chord up an octave.',smear:'Long, slow glides between the notes.',close:'Closes the filter for a dark, muffled sound; it opens slowly when you let go.',
+  frz:'Freezes the chord: it keeps ringing while you choose the next one.',oct:'Moves the top of the chord up an octave.',smear:'Long, slow glides between the notes.',build:'Build and drop: hold to build tension (the filter opens, noise rises, the snare rolls faster). Let go and it drops on the next bar. Tap a pad while holding and that chord lands on the drop.',
   stab:'Chops the chords in rhythm: plucks, or a pumping, wobbling, gating or sweeping filter. Pick the style with the Stab button below the pads.',soft:'Makes the chords quieter, so other layers come forward.',nochd:'Mutes the chords; everything else keeps playing.',
   low:'Only the low notes and the lowest chord note play.',vswell:'Two of the notes swell up and down.',vpulse:'The top notes pulse in rhythm.',stag:'The notes come in one by one after each change.',shim:'Adds a shimmer an octave above the top notes.',
   echo:'Echo throw: while you hold it, the chords go into a long dub echo that keeps ringing after you let go. Tap just before a chord change.',wash:'Wash: while you hold it, the chords go into a big reverb that hangs on after you let go.',pedal:'Pedal bass: the bass holds the note it has now while the chords keep moving above it. Switch off to let it follow again.',bloomb:'Each push alternates: the notes spread apart, then the next push pulls them together.',
@@ -1101,7 +1101,29 @@ function start(){
   LN.forEach(L=>L.nodes.vg.gain.setTargetAtTime(1,nextT,.04));A.gate.gain.setTargetAtTime(1,t,.01);
   clearInterval(timer);timer=setInterval(tick,25);tick();paint();
 }
+/* BUILD & DROP: hold to build up, let go and everything lands together on the next bar */
+const bld={on:false,rel:false,breath:false,s0:0,pad:-1,src:null,g:null};
+function buildStart(){if(!ctx||!playing){say('Press Play first.');return}const t=ctx.currentTime,T=4*240/P.bpm;
+  buildKill(t);Object.assign(bld,{on:true,rel:false,breath:false,s0:step,pad:-1});
+  const sr=ctx.createBufferSource();sr.buffer=A.noise;sr.loop=true;const f=ctx.createBiquadFilter();f.type='bandpass';f.Q.value=1.4;
+  f.frequency.setValueAtTime(450,t);f.frequency.exponentialRampToValueAtTime(7500,t+T);const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.2,t+T);
+  sr.connect(f);f.connect(g);g.connect(A.drum);sr.start(t);bld.src=sr;bld.g=g;
+  hold(A.fc.frequency,t);A.fc.frequency.setTargetAtTime(650,t,.08);A.fc.frequency.setTargetAtTime(18000,t+.35,T/3);
+  bloomShot('div');buzz(10);paint()}
+function buildEnd(){if(!bld.on)return;bld.on=false;bld.rel=true;paint()}
+function buildKill(t){if(bld.src){try{bld.g.gain.cancelScheduledValues(t);bld.g.gain.setTargetAtTime(0,t,.02);bld.src.stop(t+.2)}catch(e){}}bld.src=null;bld.g=null}
+function buildStep(s,b,t){if(!bld.on&&!bld.rel)return;const sd=60/P.bpm/4;
+  if(bld.rel&&b===0&&s>bld.s0){/* the drop */bld.rel=false;bld.breath=false;buildKill(t);
+    [A.bkS,A.bkX].forEach(n=>{hold(n.gain,t);n.gain.setTargetAtTime(1,t,.003)});hold(A.fc.frequency,t);A.fc.frequency.setTargetAtTime(18000,t,.02);
+    kick(t,1.25);noiseHit(t,'highpass',4500,.3,1.9);noiseHit(t,'bandpass',7200,.16,1.3);
+    hold(A.thW.gain,t);A.thW.gain.setTargetAtTime(1.2,t,.01);A.thW.gain.setTargetAtTime(0,t+4*sd,.2);
+    if(bld.pad>=0){queued=bld.pad;qAt=s;qUser=true;preStarted=false;bld.pad=-1}uiQ.push({t,f:paint});return}
+  if(bld.rel&&b===14&&!bld.breath){/* a short breath of silence before the drop */bld.breath=true;buildKill(t);
+    [A.bkS,A.bkX].forEach(n=>{hold(n.gain,t);n.gain.setTargetAtTime(0,t,.01)});return}
+  if(bld.breath)return;
+  const el=s-bld.s0,bar=Math.floor(el/16),div=bar<1?4:bar<2?2:1;if(el>=0&&s%div===0)snare(t,.22+.6*Math.min(1,el/64))}
 function stop(){
+  if(ctx)buildKill(ctx.currentTime);if(bld.breath&&ctx)[A.bkS,A.bkX].forEach(n=>{hold(n.gain,ctx.currentTime);n.gain.setTargetAtTime(1,ctx.currentTime,.01)});Object.assign(bld,{on:false,rel:false,breath:false,pad:-1});
   playing=false;wake(false);delete latched.frz;held.frz=false;loopOn.frz=false;freezeSync(ctx.currentTime);clearInterval(timer);const t=ctx.currentTime;
   LN.forEach(L=>{hold(L.nodes.vg.gain,t);L.nodes.vg.gain.setTargetAtTime(0,t,.12)});
   A.bend.offset.setTargetAtTime(0,t,.05);hold(A.fr.frequency,t);A.fr.frequency.setTargetAtTime(16000,t,.05);A.lin.gain.setTargetAtTime(1,t,.05);A.rzg.gain.setTargetAtTime(0,t,.05);applyMacros();
@@ -1267,11 +1289,13 @@ function paint(){const sgs=playing?suggest():[];
   const pl=playing&&!fading;$('#play').textContent=pl?'■ Stop':'▶ Play';$('#play').setAttribute('aria-label',pl?'Stop':'Play');$('#play').classList.toggle('on',!pl);$('#play').classList.toggle('stop',pl);
   $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='cap'||hook.st==='cap2'?'Hook…':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='cap'||hook.st==='cap2');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent='Stab '+({'8':'8ths',off:'Offbt',dot:'Sync','16':'16ths','4':'4ths',tres:'3-3-2',skank:'Skank',fpump:'Pump',fwob:'Wobble',fgate:'Gate',fsweep:'Sweep'}[P.srhy]||o[1].split(' ')[0])+(innerWidth<400?'':' ▾');$('#strumb').classList.toggle('on',P.astrum==='on')}
   document.querySelectorAll('.pb').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',!!latched[k]||!!held[k]||!!shots[k]);b.classList.toggle('lock',!!latched[k]);b.classList.toggle('lp',!!loopOn[k]&&!latched[k]&&!held[k]);b.classList.toggle('hold',!!held[k])});
+  {const bu=document.querySelector('.pb[data-k=build]');if(bu)bu.classList.toggle('on',bld.on||bld.rel);document.querySelectorAll('.pad').forEach((p,i)=>{if(bld.pad===i)p.classList.add('queued')})}
   {const bb=document.querySelector('.pb[data-k=beat]');if(bb)bb.textContent=on('beat')&&P.blite?'LIGHT':'BEAT'}
   document.querySelectorAll('.hvt button').forEach(t=>{const g=+t.dataset.t;t.classList.toggle('lit',PUNCH.some(x=>x[3]===g&&on(x[0])))});
 }
 function tapPad(i){
   if(!playing){cur=i;start();return}
+  if(bld.on||bld.rel){bld.pad=bld.pad===i?-1:i;paint();return}
   /* two chords in one bar: tap a second pad while one is waiting; the first lands on the bar, the second half a bar later.
      Tap a waiting pad again to take it back. */
   if(queued>=0&&qUser&&i===queue2){queue2=-1;paint();return}
@@ -1361,6 +1385,7 @@ function build(){
         if(k==='echo'){const dt=60/P.bpm*.75;A.thEL.delayTime.setTargetAtTime(dt,t,.01);A.thER.delayTime.setTargetAtTime(dt,t,.01)}hold(G,t);G.setTargetAtTime(k==='echo'?.9:1.3,t,.015)};
       const close=()=>{b.classList.remove('on');if(!ctx)return;const G=k==='echo'?A.thE.gain:A.thW.gain,tc=Math.max(ctx.currentTime,t0+60/P.bpm);hold(G,ctx.currentTime);G.setTargetAtTime(0,tc,.04)};
       b.addEventListener('pointerdown',open);b.addEventListener('pointerup',close);b.addEventListener('pointercancel',close);return}
+    if(k==='build'){b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(x){}buildStart()});const up=()=>buildEnd();b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);return}
     if(k==='bloomb'){let nx='div';b.addEventListener('pointerdown',e=>{e.preventDefault();bloomShot(nx);nx=nx==='div'?'conv':'div'});return}
     b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(x){}if(odub&&loop&&loopSt==='play'&&!(k in odState)){odState[k]=on(k);delete latched[k]}held[k]=true;t0=performance.now();punchChange(k);paint()});
     const up=()=>{if(!held[k])return;held[k]=false;if(performance.now()-t0<230){if(odub&&loop&&loopSt==='play'&&k in odState)odState[k]=!odState[k];
