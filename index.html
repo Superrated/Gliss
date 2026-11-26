@@ -50,7 +50,7 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 .lc.sel{outline:2px solid var(--hot);outline-offset:1px}.lc.lnow{box-shadow:inset 0 -4px 0 var(--l3)}
 .lpads{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.lpads .chip{height:40px;padding:0 6px;font-size:11.5px;overflow:hidden;text-overflow:ellipsis}.lpads .chip:disabled{opacity:.35}
 #tl{cursor:pointer}
-#hook{height:52px!important;flex:none;padding:0 12px;border-radius:12px}
+#hook,#strum{height:52px!important;flex:none;padding:0 12px;border-radius:12px}#strum{position:relative}#strum::after{content:'';position:absolute;right:5px;top:5px;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.55}
 .mixl{display:grid;gap:8px}.mx{display:grid;grid-template-columns:70px 1fr 34px;align-items:center;gap:10px;font-size:13px;font-weight:600}.mx output{text-align:right;color:var(--mute);font-size:12px}.mx input{width:100%}
 .shsec{display:flex;gap:6px;flex:none}.shsec .chip{flex:1;height:34px}
 .cyc button[hidden]{display:none}
@@ -210,7 +210,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.884</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.885</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -300,7 +300,7 @@ const LEADS={gsaw:['Glide saw',{w1:'sawtooth',w2:'sawtooth',d2:14,g2:1,fb:900,fe
   scream:['Scream',{w1:'sawtooth',w2:'square',d2:7,g2:.7,fb:3000,fe:6000,fd:.3,q:5,gl:.05,vib:10,vd:.15,sw:700,st:.07,at:.003}],
   fifths:['Fifths',{w1:'sawtooth',w2:'sawtooth',d2:700,g2:.8,fb:1500,fe:3500,fd:.25,q:2,gl:.08,vib:5,vd:.3,sw:0,st:.05,at:.004}],
   hoover:['Hoover',{w1:'sawtooth',w2:'sawtooth',d2:-1180,g2:.9,fb:1800,fe:2500,fd:.3,q:2,gl:.1,vib:12,vd:.1,sw:-300,st:.12,at:.006}],
-  bell:['Bell',null]};
+  bell:['Bell',null],harp:['Harp',null]};
 /* drum kits: kick pitch from-to, pitch drop time, kick length, kick level, click; snare noise colour, length, body tone; hat colour, length, level */
 const KITS={classic:['Classic',{k0:165,k1:42,kd:.12,kl:.32,kv:1,kc:0,sf:1900,sl:.17,st:185,sv:1,hf:7500,hl:.045,hv:1}],
   '808':['808',{k0:125,k1:44,kd:.09,kl:.95,kv:1.05,kc:0,sf:2600,sl:.13,st:175,sv:.85,hf:8200,hl:.03,hv:.9}],
@@ -341,7 +341,7 @@ const CYC={preset:['SOUND PRESET',[['custom','Custom'],...Object.keys(PRESETS).m
   lin:['BEFORE CHORD',[['off','Nothing'],['swell','Swell'],['run','Note run'],['dip','Dip'],['mix','Mix']]],bpat:['REESE PLAYS',[['hold','Hold'],['pulse','Pulse'],['off','Offbeat'],['gate','Rolling 16ths'],['gal','Gallop']]],
   apat:['ARP SHAPE',[['up','Up'],['down','Down'],['updn','Up-down'],['spiral','Spiral'],['leap','Leap'],['chaos','Chaos'],['up:3','Up · 3 steps'],['up:5','Up · 5 steps'],['updn:7','Up-down · 7 steps'],['spiral:5','Spiral · 5 steps']]],arate:['ARP SPEED',[['8','1/8'],['16','1/16'],['16t','Triplet'],['32','1/32']]],
   kit:['DRUM KIT',Object.keys(KITS).map(k=>[k,KITS[k][0]])],fill:['BEAT FILLS',[['off','Off'],['4','Every 4 bars'],['8','Every 8 bars'],['var','Fills + variation']]],
-  eco:['PHONE LOAD',[['auto','Auto'],['on','Eco (lighter)'],['off','Full quality']]],ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
+  eco:['PHONE LOAD',[['auto','Auto'],['on','Eco (lighter)'],['off','Full quality']]],lsus:['STRIP SUSTAIN',[['short','Short'],['long','Long'],['endless','Endless']]],ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
   uni:['STACK',[[1,'1 voice'],[3,'3 voices'],[5,'5 voices'],[7,'7 voices']]],
   srhy:['STAB STYLE',[['8','8ths'],['off','Offbeats'],['dot','Syncopated'],['16','16ths'],['4','Quarters'],['tres','Tresillo 3-3-2'],['clave','Clave'],['garage','Garage'],['skank','Skank (2 & 4)'],['gallop','Gallop'],['fpump','Pump (filter)'],['fwob','Wobble (filter)'],['fgate','Gate (filter)'],['fsweep','Sweep (filter)']]],
   lvar:['LOOP REPEATS',[[true,'Vary a little'],[false,'Stay the same']]],
@@ -378,7 +378,7 @@ function applyMotion(){const m=P.mot;P.pulse=m<.05?0:Math.min(.85,.3+m*.6);P.dri
 applyMotion();
 
 if(!P.lmove)P.lmove='smooth';
-if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.eco)P.eco='auto';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
+if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.lsus)P.lsus='short';if(!P.eco)P.eco='auto';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
 if(P.lvar===undefined)P.lvar=true;if(!P.srhy)P.srhy='8';if(P.slen===undefined)P.slen=.35;if(!P.gridp)P.gridp='four';if(!P.fill)P.fill='off';if(!P.kit)P.kit='classic';if(P.dvol===undefined)P.dvol=.75;
 const UIR=[];if(!LEADS[P.lead])P.lead='bell';if(!P.lmode)P.lmode='pluck';if(!SOUNDS[P.snd])P.snd='saw';
 let loopOn={};const bsL=[0,0,0,0];
@@ -479,7 +479,7 @@ function init(){
   A.fr=lp(16000,2);A.fc=lp(18000,1.5);A.ldF=lp(18000,.7);A.ldHP=ctx.createBiquadFilter();A.ldHP.type='highpass';A.ldHP.frequency.value=170;A.ldHP.Q.value=.6;A.ldF.connect(A.ldHP);A.ldHP.connect(A.synth);A.strum=g(.7);A.strum.connect(A.ldF);{const L=A.L={o1:osc('sawtooth',440),o2:osc('sawtooth',440),g2:g(1),f:lp(2000,2),a:g(0),pb:ctx.createConstantSource(),vib:osc('sine',5.6),vg:g(0),on:false};
     L.pb.offset.value=0;L.pb.start();L.o1.connect(L.f);L.o2.connect(L.g2);L.g2.connect(L.f);const lo=g(.34);L.f.connect(L.a);L.a.connect(lo);lo.connect(A.strum);
     L.vib.connect(L.vg);[L.o1,L.o2].forEach(o=>{L.vg.connect(o.detune);L.pb.connect(o.detune);A.bend.connect(o.detune)})}
-  A.sv=[];for(let i=0;i<10;i++){const o=osc('triangle',440),gg=g(0);o.connect(gg);gg.connect(A.strum);A.sv.push({o,g:gg})}
+  A.sv=[];A.svVib=g(0);{const vl=osc('sine',5.2);vl.connect(A.svVib)}for(let i=0;i<10;i++){const o=osc('triangle',440),gg=g(0);o.connect(gg);gg.connect(A.strum);A.svVib.connect(o.detune);A.sv.push({o,g:gg})}
   A.bkS=g(1);A.synth.connect(A.bkS);A.bkS.connect(A.f1);A.f1.connect(A.f2);A.f2.connect(A.fr);A.fr.connect(A.fc);A.mud=ctx.createBiquadFilter();A.mud.type='peaking';A.mud.frequency.value=300;A.mud.Q.value=.9;A.mud.gain.value=-3;A.fc.connect(A.mud);A.mud.connect(A.sOut);
   /* life: the main filter drifts very slowly up and down, so held chords never sound frozen */
   {const lfo=osc('sine',.055),lg=g(110);lfo.connect(lg);lg.connect(A.f1.detune);lg.connect(A.f2.detune)}A.sOut.connect(A.master);
@@ -640,7 +640,7 @@ function hold(p,t){if(p.cancelAndHoldAtTime)p.cancelAndHoldAtTime(t);else{p.canc
 const leadCap=()=>Math.min(90*Math.pow(200,P.filt),2200*Math.pow(6,P.chd)*(.25+.75*(P.bright||1))*.5);
 function applyLead(){if(!ctx)return;const d=LEADS[P.lead][1];if(!d)return;const L=A.L,t=ctx.currentTime;L.o1.type=d.w1;L.o2.type=d.w2;L.o2.detune.setValueAtTime(d.d2,t);L.g2.gain.setTargetAtTime(d.g2,t,.01);L.f.Q.setTargetAtTime(d.q,t,.01)}
 /* the lead: one voice. legato = slide to the note without a new attack (Glide mode); otherwise a fresh note, which dies away in Pluck mode */
-const LLV={gsaw:.9,square:.4,acid:.75,fifths:.7,whistle:1.6,bell:1.4,scream:.8,hoover:.7};const llv=()=>LLV[P.lead]??1;
+const LLV={harp:1.3,gsaw:.9,square:.4,acid:.75,fifths:.7,whistle:1.6,bell:1.4,scream:.8,hoover:.7};const llv=()=>LLV[P.lead]??1;
 function leadNote(m,t,legato){
   const d=LEADS[P.lead][1],L=A.L,f=mtof(m),glide=P.lmode==='glide';
   if(legato&&glide&&L.on){L.o1.frequency.setTargetAtTime(f,t,d.gl/3);L.o2.frequency.setTargetAtTime(f,t,d.gl/3);arpV.push({t,m});return}
@@ -654,13 +654,14 @@ function leadNote(m,t,legato){
 }
 /* the lead snaps gently to the nearest 16th while the beat runs */
 function gridT(){const now=ctx.currentTime;if(!playing)return now;const sd=60/P.bpm/4,back=Math.ceil((nextT-now)/sd),prev=nextT-back*sd;return now-prev<sd*.5?now:prev+sd}
-function strumNote(m,t,legato){if(P.lead==='bell')pluck(m,t);else leadNote(m,t,legato);leadM=m;leadT=t;leadRoom(m,t)}
-function strumEnd(t){if(ctx&&A.L.on){hold(A.L.a.gain,t);A.L.a.gain.setTargetAtTime(0,t,.07);A.L.on=false}}
+function strumNote(m,t,legato){if(P.lead==='bell'||P.lead==='harp')pluck(m,t);else leadNote(m,t,legato);leadM=m;leadT=t;leadRoom(m,t)}
+function strumEnd(t){if(ctx&&A.L.on){hold(A.L.a.gain,t);A.L.a.gain.setTargetAtTime(0,t,{short:.07,long:.45,endless:1.4}[P.lsus]||.07);A.L.on=false}}
 function pluck(m,t,v=1){
   if(t-lastPluck<.022)return;lastPluck=t;
   const V=A.sv[svI++%A.sv.length],t2=t+.007;
   hold(V.g.gain,t);V.g.gain.linearRampToValueAtTime(0,t2);V.o.frequency.setValueAtTime(mtof(m),t2);
-  V.g.gain.setTargetAtTime(.24*v*llv(),t2,.004);V.g.gain.setTargetAtTime(0,t2+.016,.32);arpV.push({t,m});
+  const hp=P.lead==='harp',sus={short:.32,long:1.1,endless:3.2}[P.lsus]||.32;if(A.svVib)A.svVib.gain.setTargetAtTime(hp?9:0,t,.05);
+  V.g.gain.setTargetAtTime(.24*v*llv(),t2,hp?.008:.004);V.g.gain.setTargetAtTime(0,t2+.016,hp?Math.max(sus,.9):sus);arpV.push({t,m});
 }
 let drvNow=-1;
 /* the ladder filter: four warm, slightly saturating stages with feedback, like the classic analog filter */
@@ -1054,14 +1055,14 @@ const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and soun
   stab:'Chops the chords in rhythm: plucks, or a pumping, wobbling, gating or sweeping filter. Pick the style with the Stab button below the pads.',soft:'Makes the chords quieter, so other layers come forward.',nochd:'Mutes the chords; everything else keeps playing.',
   low:'Only the low notes and the lowest chord note play.',vswell:'Two of the notes swell up and down.',vpulse:'The top notes pulse in rhythm.',stag:'The notes come in one by one after each change.',shim:'Adds a shimmer an octave above the top notes.',
   echo:'Echo throw: while you hold it, the chords go into a long dub echo that keeps ringing after you let go. Tap just before a chord change.',wash:'Wash: while you hold it, the chords go into a big reverb that hangs on after you let go.',pedal:'Pedal bass: the bass holds the note it has now while the chords keep moving above it. Switch off to let it follow again.',bloomb:'Each push alternates: the notes spread apart, then the next push pulls them together.',
-  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
+  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.',strum:'Strum: tap for a fast harp run up the chord, hold for a run down. Lovely between chord changes; try it with the Harp lead sound and Long sustain.','cy-lsus':'How long strip and Strum notes ring: Short, Long or Endless.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
   loop:'Tap to record a loop. While it plays, this opens the loop menu: Overdub, Undo, loop A and B, chain, edit and clear.',lbars:'How many bars the loop records.',rec:'Records what you hear as a WAV file.',mixbtn:'A level for each layer.',savebtn:'Save the whole song in one of four slots.',tl:'The loop bar. Tap it to edit the loop.'};
 Object.keys(CYC).forEach(k=>{if(!TIPS['cy-'+k])TIPS['cy-'+k]=CYC[k][0].charAt(0)+CYC[k][0].slice(1).toLowerCase()+': tap to choose.'});
 Object.assign(TIPS,{'cy-preset':'Sets the chord sound, arp sound, lead, ensemble, voicing, tape and drive in one go.','cy-quant':'When a tapped chord lands: next bar, every 2 bars, next beat or right away. The button under the pads switches between 1 and 2 bars.','cy-pre':'When the notes start gliding to the next chord.',
   'cy-lmove':'How the chord notes move: to the closest note, all together, or in big leaps.','cy-lin':'A little extra just before each chord change.','cy-lvar':'Small changes on repeats of the loop: a brighter chord now and then, a different ending for the hook, and a chord in the last half bar that pulls back to the start.','cy-uni':'How many detuned voices each chord note has.',
   'cy-vce':'Close keeps the chord notes together; Open spreads them wide.','cy-ens':'A warm stereo chorus on the chords.','cy-eco':'Auto turns on Eco mode on weaker phones. Eco uses up to 3 voices per note, the Clean filter, lighter distortion and a shorter reverb, so it does not crackle. Full quality always uses everything.','cy-ftype':'Clean is precise and light on the phone; Ladder is warmer and its resonance sings when you sweep the filter pad.','cy-tape':'Worn cassette: slow wobble, hiss and dull highs.','cy-alen':'Short patterns of 3, 5 or 7 notes drift across the beat.','cy-frhy':'Opens and closes the filter in rhythm.'});
 let tipT=0,tipShown=false;
-document.addEventListener('pointerdown',e=>{tipShown=false;const el=e.target.closest('.pb,#cyc button,#cycD button,#loct,#qbtn,#srbtn,#setbtn,#loop,#lbars,#rec,#mixbtn,#savebtn,#expbtn');if(!el)return;
+document.addEventListener('pointerdown',e=>{tipShown=false;const el=e.target.closest('.pb,#cyc button,#cycD button,#loct,#qbtn,#strum,#srbtn,#setbtn,#loop,#lbars,#rec,#mixbtn,#savebtn,#expbtn');if(!el)return;
   const key=el.classList.contains('pb')?el.dataset.k:el.id,txt=TIPS[key];if(!txt)return;tipShown=false;clearTimeout(tipT);
   tipT=setTimeout(()=>{const tp=$('#tip'),r=el.getBoundingClientRect();tp.textContent=txt;tp.hidden=false;const w=Math.min(280,innerWidth-20);tp.style.width=w+'px';
     tp.style.left=Math.max(10,Math.min(innerWidth-w-10,r.left+r.width/2-w/2))+'px';const above=r.top>140;tp.style.top=above?'':r.bottom+8+'px';tp.style.bottom=above?innerHeight-r.top+8+'px':'';tipShown=true},600)},true);
@@ -1341,7 +1342,7 @@ function build(){
       else latched[k]=!latched[k]}punchChange(k);paint()};
     b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
   });
-  $('#bends').innerHTML='<div style="display:flex;gap:6px"><div class="bs" id="lead" style="--c:var(--text);flex:1;min-width:0"><span>LEAD: slide across to play</span></div><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button></div>';
+  $('#bends').innerHTML='<div style="display:flex;gap:6px"><div class="bs" id="lead" style="--c:var(--text);flex:1;min-width:0"><span>LEAD: slide across to play</span></div><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button><button class="chip" id="strum" aria-label="Strum: a fast run up the chord; hold for a run down">Strum</button></div>';
   {const hb=$('#hook');let ht=0;hb._long=false;
     hb.addEventListener('pointerdown',()=>{hb._long=false;ht=setTimeout(()=>{hb._long=true;buzz(15);suggestHook()},550)});
     ['pointerup','pointercancel','pointerleave'].forEach(ev=>hb.addEventListener(ev,()=>clearTimeout(ht)))}
@@ -1350,7 +1351,7 @@ function build(){
   $('#loct').addEventListener('click',()=>{P.loct={0:12,12:-12,'-12':0}[P.loct||0];save();showOct();paint()});showOct();
   const DRUMK=['kit','fill'];$('#cyc').innerHTML=Object.keys(CYC).filter(k=>!DRUMK.includes(k)).map(k=>`<button id="cy-${k}"></button>`).join('');$('#cycD').innerHTML=DRUMK.map(k=>`<button id="cy-${k}"></button>`).join('');
   /* Shape options in three sections, one shown at a time */
-  const SEC={sound:['Sound',['preset','snd','lead','lmode','ftype','ens','tape','vce','uni','eco']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
+  const SEC={sound:['Sound',['preset','snd','lead','lmode','lsus','ftype','ens','tape','vce','uni','eco']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
   const showSec=()=>{$('#shsec').innerHTML=Object.keys(SEC).map(k=>`<button class="chip ${P.shsec===k?'on':''}" data-s="${k}">${SEC[k][0]}</button>`).join('');
     Object.keys(CYC).forEach(k=>{const el=$('#cy-'+k);if(el&&!['kit','fill'].includes(k))el.hidden=!SEC[P.shsec][1].includes(k)})};
   $('#shsec').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.shsec=x.dataset.s;save();showSec()});
@@ -1457,6 +1458,12 @@ function build(){
     $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>{$('#pick').classList.remove('open');UIR.forEach(f=>f())});
     $('#pbox .mixl').addEventListener('input',e=>{const x=e.target;if(!x.dataset.k)return;P[x.dataset.k]=+x.value;x.nextElementSibling.textContent=Math.round(x.value*100);fTouch[x.dataset.k]=performance.now();applyMacros();save()})});
   /* export: WAV recording, the loop as MIDI, and the whole song as a .gliss file to keep or open on another device */
+  /* strum: the chord as a fast run over two octaves, up on a tap, down on a hold */
+  {const sb=$('#strum');let ht=0,longDone=false;const run=down=>{if(!ctx||!playing){say('Press Play first.');return}const l=strumLad(),n=Math.min(l.length,14),lo=Math.max(0,Math.floor((l.length-n)/2));
+      const t0=ctx.currentTime+.02;for(let i=0;i<n;i++)pluck(l[lo+(down?n-1-i:i)],t0+i*.03,.85);buzz(8)};
+    sb.addEventListener('pointerdown',()=>{longDone=false;ht=setTimeout(()=>{longDone=true;run(true)},450)});
+    ['pointerup','pointercancel','pointerleave'].forEach(ev=>sb.addEventListener(ev,()=>clearTimeout(ht)));
+    sb.addEventListener('click',()=>{if(longDone){longDone=false;return}run(false)})}
   $('#qbtn').addEventListener('click',()=>{P.quant=P.quant==='2bar'?'bar':'2bar';save();UIR.forEach(f=>f());paint();say(P.quant==='2bar'?'Chords change every 2 bars.':'Chords change every bar.')});
   $('#expbtn').addEventListener('click',()=>{
     $('#pbox').innerHTML='<h2>Export<button class="chip" id="pclose">Done</button></h2><div class="lmenu">'+
