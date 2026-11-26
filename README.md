@@ -21,7 +21,7 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 
 ## How to play
 
-**Start a jam:** when you open Gliss, pick one of eight vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating, Lounge keys, Deep dub). **▶ Song start** sets the chords, sound, beat and tempo and immediately plays a composed 8-bar loop: a progression with passing chords, layers that build up, a break and a hook. Take it over by tapping pads; Loop ▾ lets you overdub, edit or clear it. **Just the sound** only sets everything up, so you start from scratch.
+**Start a jam:** when you open Gliss, pick one of eight vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating, Lounge keys, Deep dub). One tap sets the chords, sound, beat and tempo; then it is up to you. A 13-step tour runs the first time and covers the loop menu, the loop editor and how to keep your music too.
 
 **Jam page**
 - **Chord pads:** tap a pad and the notes glide to it on the next bar (or every 2 bars: the **1 bar / 2 bars** button under the pads). The waiting pad fills up from the bottom; when it is full the chord lands, with a short flash. A tap just after the line still counts as on time.
@@ -69,7 +69,7 @@ On tablets in landscape, the Jam page stays on the left with Shape or Drums on t
 
 While playing, Gliss keeps the screen awake and gives a short buzz on pad taps where the browser allows it.
 
-A short tour runs the first time you open Gliss. You can see it again under Help on the Shape page.
+A tour runs the first time you open Gliss. You can see it again under Help on the Shape page.
 
 ## Tech
 
