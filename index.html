@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.867</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.868</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -675,8 +675,8 @@ function applyDrive(){const d=P.drv??.2;if(Math.abs(d-drvNow)<.01)return;drvNow=
   for(let i=0;i<1024;i++){const x=i/511.5-1;cv[i]=Math.tanh(k*x)/Math.tanh(k)}A.shape.curve=cv}
 function applyMacros(){
   if(!ctx)return;const t=ctx.currentTime,f=90*Math.pow(200,P.filt);
-  A.f1.frequency.setTargetAtTime(f,t,.04);A.f2.frequency.setTargetAtTime(f,t,.04);A.f2.Q.setTargetAtTime(.7+(P.res??.25)*9,t,.04);
-  if(A.lad){A.lad.parameters.get('cutoff').setValueAtTime(Math.min(19000,f),t);A.lad.parameters.get('res').setValueAtTime((P.res??.25)*3.6,t)}
+  A.f1.frequency.setTargetAtTime(f,t,.04);A.f2.frequency.setTargetAtTime(f,t,.04);A.f2.Q.setTargetAtTime(.7+Math.pow(P.res??.25,1.4)*4.8,t,.04);
+  if(A.lad){A.lad.parameters.get('cutoff').setValueAtTime(Math.min(19000,f),t);A.lad.parameters.get('res').setValueAtTime(Math.pow(P.res??.25,1.4)*2.5,t)}
   A.dIn.gain.setTargetAtTime(P.space*.5,t,.05);A.rIn.gain.setTargetAtTime(P.space*1.1,t,.05);
   const dt=60/P.bpm*.75;A.dL.delayTime.setTargetAtTime(dt,t,.05);A.dR.delayTime.setTargetAtTime(dt,t,.05);
   A.vol.gain.setTargetAtTime(P.vol,t,.03);A.drum.gain.setTargetAtTime(P.dvol??.75,t,.03);applyDetune();A.ldF.frequency.setTargetAtTime(leadCap(),t,.04);
