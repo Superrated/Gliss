@@ -52,6 +52,8 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 .lmenu .chip small{font-size:10px;font-weight:500;color:var(--mute)}.lmenu .chip.on small{color:inherit;opacity:.8}.lmenu .chip:disabled{opacity:.35}.lmenu .danger{border-color:var(--l1)}.lmenu .danger.on{background:var(--l1);color:#fff}
 #loop.odub{border-color:var(--l1);color:#fff}
 #tip{position:fixed;z-index:9;background:#fff;color:#10121f;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.35;box-shadow:0 8px 30px rgba(0,0,0,.5);pointer-events:none}
+.vibes{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vibes button{display:grid;gap:3px;text-align:left;padding:12px 14px;border-radius:14px;background:var(--ink);border:1px solid var(--rail);min-height:70px}
+.vibes b{font-family:var(--display);font-size:17px;color:var(--hot)}.vibes small{font-size:11px;color:var(--mute);line-height:1.3}
 .chip.arm{background:var(--l1);border-color:var(--l1);color:#fff}
 .chip.on{background:linear-gradient(180deg,#ffc469,#ffa83a);color:var(--ink);border-color:var(--hot);box-shadow:0 0 14px rgba(255,179,71,.35)}
 #play{min-width:96px;height:42px;font-size:15px;font-weight:800;border-radius:21px;flex:none;letter-spacing:.02em}
@@ -96,6 +98,8 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 .rl{width:40px}
 #tl{flex:1;min-width:0;height:30px;border-radius:10px;background:#141730;border:1px solid #232849;display:block}
 .pb.on{background:var(--c);border-color:var(--c);color:var(--ink);box-shadow:0 0 14px color-mix(in srgb,var(--c) 50%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
+.pb.lp{background:color-mix(in srgb,var(--c) 14%,#171a30);border:2px solid var(--c);color:#fff}
+.pb.hold{box-shadow:0 0 0 2px #fff,0 0 22px var(--c)}
 .pb.lock::before{content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:currentColor}
 .bends{display:grid;grid-template-columns:1fr;gap:6px;flex:none}
 #loct{height:30px;flex:none;padding:0 10px}
@@ -195,7 +199,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>v0.850</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>v0.852</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -257,9 +261,9 @@ const MYSET0=SETS.length;
 {let my=null;try{my=JSON.parse(localStorage.getItem('gliss-sets')||'null')}catch(e){}
   for(let k=0;k<4;k++){const c=my&&my[k]&&my[k].length===6&&my[k].every(x=>Q[x[1]])?my[k]:[[0,'maj9'],[9,'m9'],[5,'maj9'],[7,'sus'],[2,'m9'],[4,'m7']];SETS.push({n:'My set '+(k+1),c,my:true})}}
 const saveMySets=()=>{try{localStorage.setItem('gliss-sets',JSON.stringify(SETS.slice(MYSET0).map(x=>x.c)))}catch(e){}};
-const PUNCH=[['arp','ARP','--l3',0],['arp2','SLOW ARP','--l3',0],['counter','COUNTER','--l3',0],['bass','REESE','--l3',0],['beat','BEAT','--l3',0],
-  ['frz','FREEZE','--l4',1],['oct','OCTAVE UP','--l4',1],['smear','SMEAR','--l4',1],['close','DARKEN','--l4',1],['stab','STAB','--l4',1],['soft','SOFTER','--l4',1],['nochd','NO CHORDS','--l4',1],['hops','SCATTER','--l3',0],['spark','SPARKLE','--l3',0],
-  ['low','LOW ONLY','--l2',2],['vswell','SWELL','--l2',2],['vpulse','PULSE TOP','--l2',2],['stag','ONE BY ONE','--l2',2],['shim','SHIMMER','--l2',2],['div','DIVERGE','--lead',2],['conv','CONVERGE','--lead',2]];
+const PUNCH=[['arp','ARP','--l3',0],['counter','COUNTER','--l3',0],['bass','REESE','--l3',0],['beat','BEAT','--l3',0],
+  ['frz','FREEZE','--l4',1],['oct','OCTAVE UP','--l4',1],['smear','SMEAR','--l4',1],['close','DARKEN','--l4',1],['stab','STAB','--l4',1],['soft','SOFTER','--l4',1],['nochd','NO CHORDS','--l4',1],['spark','SPARKLE','--l3',0],
+  ['low','LOW ONLY','--l2',2],['vswell','SWELL','--l2',2],['vpulse','PULSE TOP','--l2',2],['stag','ONE BY ONE','--l2',2],['shim','SHIMMER','--l2',2],['bloomb','BREATHE','--lead',2]];
 const ARR=[['glide','Glide'],['curve','Curve'],['fan','Fan out'],['coll','Collapse'],['sfan','Slow fan'],['fall','Fall'],['rise','Rise'],['late','One late'],['mix','Mix']];
 const FADERS=[['bpm','TEMPO','D',60,180,1],['swing','SWING','D'],['pump','PUMP','D'],['dvol','DRUM VOLUME','X'],['chd','CHORDS','X'],['mot','MOTION','S'],['space','SPACE','S'],['det','DETUNE','S'],['bloom','BLOOM','S'],['spread','GLIDE SPREAD','S'],['slen','STAB LENGTH','S'],['stag','LINES ONE BY ONE','S'],['drv','DRIVE','S'],['vol','VOLUME','S']];
 /* ENERGY: one fader that brings the layers in, in this order */
@@ -343,7 +347,7 @@ if(P.lvar===undefined)P.lvar=true;if(!P.srhy)P.srhy='8';if(P.slen===undefined)P.
 const UIR=[];if(!LEADS[P.lead])P.lead='bell';if(!P.lmode)P.lmode='pluck';if(!SOUNDS[P.snd])P.snd='saw';
 let loopOn={};const bsL=[0,0,0,0],bld={on:false,start:0,pend:false,pr:0};
 let ribLive=null,ribSound=false,ribM=0,ribLoopOn=false;
-const on=k=>!!(latched[k]||held[k]||loopOn[k]||nrgOn[k]||xyOn[k]);
+const on=k=>k!=='arp2'&&k!=='hops'&&!!(latched[k]||held[k]||loopOn[k]||nrgOn[k]||xyOn[k]);
 function clearLoop(){loopSt='off';loop=null;odub=false;loopOn={};for(let k=0;k<4;k++)bsL[k]=0;if(ribLoopOn&&ctx){ribLoopOn=false;if(ribLive===null)ribSet(null,ctx.currentTime)}
   if(ctx){applyDetune();if(!on('dive')&&!bld.on)A.bend.offset.setTargetAtTime(0,ctx.currentTime,.07)}}
 /* lead ribbon: finger position picks a note of the current chord, and it glides between them */
@@ -517,7 +521,13 @@ function buildLines(){
 }
 /* VARY buttons that change which notes sound: Low keeps the two bass notes and one middle note; Shimmer doubles the top two an octave up */
 const upRank=()=>[0,1,2,3].sort((x,y)=>LN[x].midi-LN[y].midi);
-const lineLevel=i=>!on('low')||i>=4||i===upRank()[0]?1:0;
+const duckF=[1,1,1,1,1,1];let leadM=null,leadT=0;
+const lineLevel=i=>(!on('low')||i>=4||i===upRank()[0]?1:0)*duckF[i];
+/* room for the lead: the top chord note dips a little, and chord notes a step away from the lead note get quiet */
+function leadRoom(m,t){if(!ctx||!LN[0]||!LN[0].nodes)return;const up=[0,1,2,3],top=up.reduce((a,b)=>LN[b].midi>LN[a].midi?b:a,0);
+  for(let i=0;i<6;i++){let f=1;if(m!=null&&i<4){const d=Math.abs(LN[i].midi-m),pc=Math.min(d%12,12-d%12);if(i===top)f=.7;if((pc===1||pc===2)&&d<=14)f=.35}duckF[i]=f}
+  applyVary(t)}
+const leadBusy=()=>leadM!=null||hook.st==='play';
 function applyVary(t,stagger){
   if(!ctx||!LN[0].nodes)return;const ur=upRank(),order=IDX.slice().sort((x,y)=>LN[x].midi-LN[y].midi),sd=60/P.bpm/4;
   LN.forEach((L,i)=>{const lv=lineLevel(i),g=L.nodes.mg.gain,r=order.indexOf(i);
@@ -576,7 +586,9 @@ function leadNote(m,t,legato){
   hold(L.vg.gain,t);L.vg.gain.setTargetAtTime(0,t,.01);L.vg.gain.setTargetAtTime(d.vib,t+d.vd,.2);
   L.on=glide;arpV.push({t,m});
 }
-function strumNote(m,t,legato){if(P.lead==='bell')pluck(m,t);else leadNote(m,t,legato)}
+/* the lead snaps gently to the nearest 16th while the beat runs */
+function gridT(){const now=ctx.currentTime;if(!playing)return now;const sd=60/P.bpm/4,back=Math.ceil((nextT-now)/sd),prev=nextT-back*sd;return now-prev<sd*.5?now:prev+sd}
+function strumNote(m,t,legato){if(P.lead==='bell')pluck(m,t);else leadNote(m,t,legato);leadM=m;leadT=t;leadRoom(m,t)}
 function strumEnd(t){if(ctx&&A.L.on){hold(A.L.a.gain,t);A.L.a.gain.setTargetAtTime(0,t,.07);A.L.on=false}}
 function pluck(m,t,v=1){
   if(t-lastPluck<.022)return;lastPluck=t;
@@ -636,7 +648,7 @@ function glideLines(t,pi,arrive){
 /* counter line: one held note per chord. It moves the opposite way to the top of the chord, and starts moving together with the early glide. */
 function counterGo(t,pi,arrive){
   const ch=chordAt(pi),root=(P.key+ch[0])%12,tones=[0,...Q[ch[1]][1]].map(x=>x%12);
-  const lo=P.creg==='high'?69:52,hi=P.creg==='high'?88:72,pl=[];
+  const lo=(P.creg==='high'&&!leadBusy())?69:52,hi=(P.creg==='high'&&!leadBusy())?88:72,pl=[];
   for(let m=lo;m<=hi;m++)if(tones.includes(((m-root)%12+12)%12))pl.push(m);
   if(cCur<lo||cCur>hi)cCur=(lo+hi)/2;
   const d=-topDir||(chordN%2?1:-1),up=pl.find(m=>m>cCur),dn=pl.slice().reverse().find(m=>m<cCur);
@@ -654,7 +666,7 @@ function setChord(pi){
   for(let o=0;o<P.aoct;o++)tones.forEach(x=>pool.push(b+x+12*o));pool.push(b+12*P.aoct);
   bassM=31+((root-7+12)%12);const iv=Q[ch[1]][1];
   bass3=iv.find(x=>x%12===3||x%12===4);if(bass3===undefined)bass3=5;bass3%=12;bass7=iv.find(x=>x%12===10||x%12===11);if(bass7===undefined)bass7=9;bass7%=12;
-  const lo=P.creg==='high'?69:52,hi=P.creg==='high'?91:72;cPool=[];
+  const lo=(P.creg==='high'&&!leadBusy())?69:52,hi=(P.creg==='high'&&!leadBusy())?91:72;cPool=[];
   for(let m=lo;m<=hi;m++)if(tones.includes(((m-root)%12+12)%12))cPool.push(m);
   if(cCur<lo||cCur>hi)cCur=(lo+hi)/2;
 }
@@ -670,7 +682,7 @@ function genCounter(from,dir){
 function commit(t,pi,b){
   curF=qF;qF=null;cur=pi;queued=-1;qUser=false;qAuto=false;qAt=-1;linDone=false;A.lin.gain.setTargetAtTime(1,t,.012);
   if(loopSt==='rec'&&loop){const o=step-loop.start;loop.ev=loop.ev.filter(e=>e.o!==o);loop.ev.push({o,pad:pi})}
-  if(!preStarted)glideLines(t,pi,0);preStarted=false;
+  if(!preStarted)glideLines(t,pi,0);preStarted=false;if(leadM!=null)leadRoom(leadM,t);
   setChord(pi);arpI=0;arp2I=0;spI=0;
   if(A.spEg&&!first){const sd=60/P.bpm/4;spV.forEach(v=>{hold(v.g.gain,t);v.g.gain.setTargetAtTime(0,t,.05)});spV=[];
     hold(A.spEg.gain,t);A.spEg.gain.setTargetAtTime(0,t,.03);A.spEg.gain.setTargetAtTime(1,t+sd*6,.08);hold(A.spFb.gain,t);A.spFb.gain.setTargetAtTime(0,t,.03);A.spFb.gain.setTargetAtTime(.42,t+sd*6,.08)}if(!first)applyVary(t,on('stag'));lastCommit=step;
@@ -723,7 +735,7 @@ function sparkStep(s,t,sd){
   const dt=sd*3;A.spDL.delayTime.setTargetAtTime(dt,t,.05);A.spDR.delayTime.setTargetAtTime(dt,t,.05);
   if(s%3)return;
   /* a real arpeggio of the chord, built from its root upwards (root, 3rd, 5th, 7th, 9th), going up and back down */
-  const ch=chordAt(cur),root=(P.key+ch[0])%12,base=74+((root-2+12)%12);
+  const ch=chordAt(cur),root=(P.key+ch[0])%12,base=84+((root-2+12)%12);
   const lad=[0,...Q[ch[1]][1].slice().sort((a,b)=>a-b)].map(x=>base+x).filter((m,k,a)=>a.indexOf(m)===k);lad.push(base+12);lad.sort((a,b)=>a-b);
   const ARP=[0,1,2,3,4,3,2,1],i=spI++,m=lad[Math.min(lad.length-1,ARP[i%ARP.length])];
   const f=mtof(m),c=ctx.createOscillator(),md=ctx.createOscillator(),mg=ctx.createGain(),g=ctx.createGain();
@@ -771,7 +783,7 @@ function arpStep(b,t,dur){
   const crazy=on('crazy');if(!crazy&&!on('arp'))return;
   const ev=arpEvents(b,t,dur,crazy?'32':P.arate);
   for(const [tt,d] of ev){
-    const i0=arpI++,i=P.alen?i0%P.alen:i0;let m=arpNote(i,crazy?'updn':P.apat);
+    const i0=arpI++,i=P.alen?i0%P.alen:i0;let m=arpNote(i,crazy?'updn':P.apat);if(leadBusy()&&m>76)m-=12;
     if(crazy&&i%3===2)m+=12;if(m>98)m-=24;
     const n=crazy&&b>=14?2:1;
     for(let r=0;r<n;r++)arpHit(tt+r*d/n,m,d/n*.7,crazy&&r===0&&i%8===7,r?.7:1);
@@ -829,6 +841,7 @@ function schedStep(s,t,dur){
   if(hook.st==='play'){const o=((s-hook.start)%hook.len+hook.len)%hook.len,rb=hook.rb[o];
     if(rb!=null&&ribLive===null&&loopSeg<0){const l=strumLad(),sg=Math.min(l.length-1,Math.floor(rb*l.length));if(sg!==hookSeg){strumNote(l[sg],t,hookSeg>=0);hookSeg=sg}}
     else if(hookSeg>=0){if(ribLive===null&&loopSeg<0)strumEnd(t);hookSeg=-1}}
+  if(leadM!=null&&ribLive===null&&!A.L.on&&t-leadT>.6){leadM=null;leadRoom(null,t)}
   if(first){commit(t,cur,b);did=true}
   else{
     if(queued<0){
@@ -947,7 +960,7 @@ function tick(){
   if(!playing)return;
   if(document.hidden){const now=ctx.currentTime;while(uiQ.length&&uiQ[0].t<=now)uiQ.shift().f();if(arpV.length>300)arpV=arpV.filter(a=>a.t>now-5);Object.values(TR).flat().forEach(tr=>trAdv(tr,now))}
   if(nextT<ctx.currentTime-.3)nextT=ctx.currentTime+.05;
-  while(nextT<ctx.currentTime+.13){
+  while(nextT<ctx.currentTime+(document.hidden?1.2:.13)){
     const sd=60/P.bpm/4,sw=P.swing*.3,dur=sd*(step%2?1-sw:1+sw);
     schedStep(step,nextT,dur);nextT+=dur;step++;
   }
@@ -965,7 +978,7 @@ const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and soun
   frz:'Freezes the chord: it keeps ringing while you choose the next one.',oct:'Moves the top of the chord up an octave.',smear:'Long, slow glides between the notes.',close:'Closes the filter for a dark, muffled sound; it opens slowly when you let go.',
   stab:'Turns the held chord into rhythmic plucks. The rhythm is set with the Stab button next to Arrive.',soft:'Makes the chords quieter, so other layers come forward.',nochd:'Mutes the chords; everything else keeps playing.',
   low:'Only the low notes and the lowest chord note play.',vswell:'Two of the notes swell up and down.',vpulse:'The top notes pulse in rhythm.',stag:'The notes come in one by one after each change.',shim:'Adds a shimmer an octave above the top notes.',
-  div:'One push: the notes spread apart, then come back.',conv:'One push: the notes pull together, then come back.',
+  bloomb:'Each push alternates: the notes spread apart, then the next push pulls them together.',
   arrbtn:'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.',srbtn:'The rhythm of Stab.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
   loop:'Tap to record a loop. While it plays, this opens the loop menu: Overdub, Undo, loop A and B, chain, edit and clear.',lbars:'How many bars the loop records.',rec:'Records what you hear as a WAV file.',mixbtn:'A level for each layer.',savebtn:'Save the whole song in one of four slots.',tl:'The loop bar. Tap it to edit the loop.'};
 Object.keys(CYC).forEach(k=>{if(!TIPS['cy-'+k])TIPS['cy-'+k]=CYC[k][0].charAt(0)+CYC[k][0].slice(1).toLowerCase()+': tap to choose.'});
@@ -1169,7 +1182,7 @@ function paint(){const sgs=playing?suggest():[];
   const pl=playing&&!fading;$('#play').textContent=pl?'■ Stop':'▶ Play';$('#play').setAttribute('aria-label',pl?'Stop':'Play');$('#play').classList.toggle('on',!pl);$('#play').classList.toggle('stop',pl);
   document.querySelectorAll('#sets .chip').forEach((c,i)=>c.classList.toggle('on',i===P.set));
   $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='arm'?'Hook…':hook.st==='rec'?'● Hook':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='arm'||hook.st==='rec');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#srbtn').textContent='Stab '+o[1].split(' ')[0]+' ▾'}
-  document.querySelectorAll('.pb').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',on(k)||!!shots[k]);b.classList.toggle('lock',!!latched[k])});
+  document.querySelectorAll('.pb').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',!!latched[k]||!!held[k]||!!shots[k]||(!!nrgOn[k]||!!xyOn[k]));b.classList.toggle('lock',!!latched[k]);b.classList.toggle('lp',!!loopOn[k]&&!latched[k]&&!held[k]);b.classList.toggle('hold',!!held[k])});
 }
 function tapPad(i){
   if(!playing){cur=i;start();return}
@@ -1181,11 +1194,12 @@ function tapPad(i){
     if(loop&&loopSt==='play'&&loop.ev.length){const rel=((step-loop.start)%loop.len+loop.len)%loop.len,o=(Math.floor(rel/16)*16+8)%loop.len;snapLoop();loop.ev=loop.ev.filter(x=>x.o!==o);loop.ev.push({o,pad:i})}
     paint();return}
   qUser=true;queue2=-1;qF=null;
+  const late=P.quant==='bar'&&!first&&(visStep%16)<2&&i!==cur;
   /* while a loop plays, a tapped chord replaces the chord in the current slot of the loop */
   if(loop&&loopSt==='play'&&loop.ev.length){const rel=((step-loop.start)%loop.len+loop.len)%loop.len;
     snapLoop();let e=loop.ev.filter(x=>x.o<=rel).sort((a,b)=>b.o-a.o)[0]||loop.ev.slice().sort((a,b)=>b.o-a.o)[0];e.pad=i;delete e.f}
   if(i===cur&&queued>=0){queued=preStarted?cur:-1;qAt=-1;preStarted=false}
-  else{queued=i;qAuto=false;qAt=-1;preStarted=false}
+  else{queued=i;qAuto=false;qAt=late?step:-1;preStarted=false}
   paint();
 }
 function punchChange(k){
@@ -1262,7 +1276,7 @@ function build(){
   $('#punchJ').innerHTML=prow('ADD',0)+prow('HOLD',1)+prow('VARY',2);
   document.querySelectorAll('.pb').forEach(b=>{
     const k=b.dataset.k;let t0=0;
-    if(k==='div'||k==='conv'){b.addEventListener('pointerdown',e=>{e.preventDefault();bloomShot(k)});return}
+    if(k==='bloomb'){let nx='div';b.addEventListener('pointerdown',e=>{e.preventDefault();bloomShot(nx);b.textContent=nx==='div'?'BREATHE ↘':'BREATHE ↗';nx=nx==='div'?'conv':'div'});return}
     b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(x){}if(odub&&loop&&loopSt==='play'&&!(k in odState)){odState[k]=on(k);delete latched[k]}held[k]=true;t0=performance.now();punchChange(k);paint()});
     const up=()=>{if(!held[k])return;held[k]=false;if(performance.now()-t0<230){if(odub&&loop&&loopSt==='play'&&k in odState)odState[k]=!odState[k];else latched[k]=!latched[k]}punchChange(k);paint()};
     b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
@@ -1293,7 +1307,7 @@ function build(){
   $('#pick').addEventListener('click',e=>{if(e.target.id==='pick')$('#pick').classList.remove('open')});
   {const el=$('#lead');let last=-1;
     let rc=null;const go=e=>{const r=rc,x=Math.max(0,Math.min(.999,(e.clientX-r.left)/r.width)),l=strumLad(),sg=Math.floor(x*l.length);
-      ribLive=x;if(sg!==last){el.style.setProperty('--b',(sg+1)/l.length);strumNote(l[sg],ctx.currentTime,last>=0);last=sg}};
+      ribLive=x;if(sg!==last){el.style.setProperty('--b',(sg+1)/l.length);strumNote(l[sg],gridT(),last>=0);last=sg}};
     el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId)}catch(x){}if(!ctx)init();if(ctx.state!=='running')ctx.resume();rc=el.getBoundingClientRect();go(e)});
     el.addEventListener('pointermove',e=>{if(ribLive!==null)go(e)});
     const up=()=>{ribLive=null;last=-1;el.style.setProperty('--b',0);if(ctx)strumEnd(ctx.currentTime)};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);}
@@ -1350,7 +1364,7 @@ function build(){
     $('#pbox').innerHTML='<h2>Arrive<button class="chip" id="pclose">Close</button></h2><div class="opt"><div>How the notes travel to each new chord</div></div><div class="seg">'+ARR.map(([v,n])=>`<button data-v="${v}" class="${P.arr===v?'on':''}">${n}</button>`).join('')+'</div>';
     $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
     $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.arr=x.dataset.v;save();paint();$('#pick').classList.remove('open')})});
-  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Buttons: hold to play while held, quick tap to lock on or off. Chord pads: tap to change chord (the notes start gliding right away and land on the bar), hold for a passing chord that jumps back when you let go. Pads: swipe up on a pad for its brighter version, down for its darker version (the playing chord changes right away; other pads use it when you tap them) (the small ▲ or ▼ on the pad lights up; swipe the other way to go back). Filter pad (bottom left of the Jam page): left-right sets the cutoff, up-down the resonance; it stays where you leave it. Diverge and Converge (Vary row): one tap starts long notes on top of the chord that slowly fan out from one note into the chord, or come together onto its root, over about three bars. Stab: the chords are plucked in rhythm instead of ringing, like a house chord stab (rhythm and length on the Shape page). Soft: the chords get quieter and darker while you hold it (or tap to lock). No chords: the chords fade out while everything else keeps playing and still follows the pads you tap. Freeze: the chord keeps sounding as a drone while you play on. Arrive (the button under the pads) opens a list that picks how the notes travel to each new chord. Save / load (Shape page): opens four slots; each shows what is in it, with a Save button and a Load button. Drums page: switch the beat on or off, pick a drum kit and fills, tap steps in the beat grid, and set tempo (or tap it), swing, pump and drum volume. Lead octave: the small button next to the lead strip moves it an octave up or down. Chord sets: tap the set name (left of the loop bar) to pick another set of six chords or change the key. Pads marked "try" are chords that tend to sound good next. Stop fades out gently; hold the Play/Stop button to switch every locked button off at once. On Shape: Voicing (Open spreads the chord wide), Ensemble (a warm stereo chorus), Tape (worn-cassette wobble and hiss) and the Drive fader (clean to gritty). The loop also records filter pad and Chords, Space and Drive moves, and the buttons you lock. With Overdub on, tapping a button switches it on or off in the loop from that point. Hold A|B to pick a chain like A A B A. Hook (next to the lead strip) keeps two bars of lead and repeats them over the chords; hold Hook for a suggested one. Mixer (on Shape) sets the level of each layer. Each loop keeps its own sound, so B can sound different from A. Tap the loop bar to edit the loop (Break makes the end of a block go quiet): each block is half a bar, tap one and pick its chord. Arp sound and Arp length (3, 5 or 7 steps for patterns that drift across the beat) are on Shape. Two chords in one bar: tap a second pad while the first is still waiting; the first lands on the bar, the second (marked ½) half a bar later. Tap a waiting pad again to take it back. Clear needs a second tap, and ↶ undoes the last loop swap or overdub pass. A|B next to the loop switches between two loops at the next bar; an empty one records. Lift ↑ moves the whole jam up a step at the next bar (hold it to go down). In the chord set list, ✎ My set 1–4 lets you build your own six chords. Save / load has a button to save the playing loop as a MIDI file. The red Rec button records what you hear; press it again to stop and save a zip with the WAV inside. While a loop plays, tapping a pad swaps the chord in that spot of the loop, and the Overdub chip adds any button you hold (and the lead) to the loop. The loop changes a little by itself every few passes. Loop records 2, 4, 8 or 16 bars (tap the bars chip next to it) of your chords, held buttons and strums, then repeats them; the bar turns red while it records and shows your chord changes after. The VARY row changes how the chord is played: Low keeps only the bass and one middle note, Swell 2 lets two notes breathe while the rest hold, Pulse top pulses the two highest notes, Stagger brings the notes of each new chord in one by one, Shimmer doubles the top notes an octave up. Scenes (Mirage, Lift, Full, Wild) set the whole mood in one tap.</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
+  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="qstart">Start a jam…</button><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Hold any button to read what it does. Buttons: quick tap locks on or off, hold to play only while held. Filled = locked on, outlined = the loop plays it, white ring = you are holding it. Chord pads: tap and the notes glide to the chord on the next bar (a tap just after the bar still counts). Tap a second pad while one waits for two chords in a bar (the second marked ½). Hold a pad for a passing chord. Swipe up for the brighter version, down for the darker one. Chord set (left of the loop bar): sets, key, and ✎ My set 1–4 to build your own. Lead strip: slide to play notes that always fit; they snap gently to the beat and the chords make room for them. Hook keeps two bars of lead and repeats them; hold Hook for a suggested one. Arrive: how notes travel to a new chord. Lead moves the strip an octave, Lift ↑ moves the jam up a step at the next bar (hold for down), Stab sets the stab rhythm. Loop: tap to record 2–16 bars (bars chip next to it). While it plays, tap a pad to swap a chord. Loop A ▾ opens the loop menu: Overdub, Undo, loop B, Chain (A A B A…), Edit loop, Save as MIDI, Clear. Tap the loop bar to edit: chords per half bar, darker or brighter versions, breaks, layers per block, clear lead or moves, double the loop. Shape: scenes, Sound / Chords / Arp & bass options (Sound preset sets everything at once), faders, Save / load (the whole song), Mixer and this help. Drums: beat, kit, fills, step grid, tempo, swing and pump. Stop fades out; hold Play/Stop to switch every locked button off. Rec records a WAV. Start a jam picks a whole vibe in one tap.</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
     ?`<div class="opt"><label for="t-${k}"><span>${lab}</span><output id="to-${k}"></output></label><input type="range" id="t-${k}" min="${a}" max="${b2}" step="${c}" value="${P[k]}"></div>`
     :`<div class="opt"><div>${lab}</div><div class="seg" data-k="${k}">${a.map(([v,n])=>`<button data-v="${v}">${n}</button>`).join('')}</div></div>`).join('');
   TUNE.forEach(([lab,k,type,a,b2])=>{
@@ -1369,6 +1383,7 @@ function build(){
   drawGrid();
   $('#close').addEventListener('click',()=>$('#sheet').classList.remove('open'));
   $('#retour').addEventListener('click',()=>window.startTour());
+  $('#qstart').addEventListener('click',()=>{$('#sheet').classList.remove('open');quickStart()});
   $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')$('#sheet').classList.remove('open')});
   /* mixer: one level per layer */
   $('#mixbtn').addEventListener('click',()=>{const CH=[['chd','Chords'],['mxA','Arps'],['mxL','Lead'],['mxR','Reese'],['mxC','Counter'],['mxS','Sparkle'],['dvol','Drums']];
@@ -1541,7 +1556,7 @@ const TOUR=[
   ['Filter pad','Drag left or right to make everything darker or brighter, and up for a more resonant, squelchy sound. It stays where you leave it.','#xyp','jam'],
   ['Shape the sound','The Shape page has the scenes, sounds, effects and Save / load.','#pg-shape','shape'],
   ['Drums','The Drums page has the beat: kit, fills, a step grid you tap in, tempo and swing.','#pg-drums','drums'],
-  ['Loop your chords','Tap Loop: recording starts on the next bar and lasts the number of bars shown next to it (tap that to change it). Then it repeats. While it plays, tap a pad to swap the chord in that spot. The Loop ▾ button opens the loop menu (Overdub, Undo, loop B, chain, edit, clear); tap the loop bar to edit it. Hold any button for a short explanation. You can see this tour again under Help & tour on the Shape page.','#looprow','jam']];
+  ['Loop your chords','Tap Loop: recording starts on the next bar and lasts the number of bars shown next to it (tap that to change it). Then it repeats. While it plays, tap a pad to swap the chord in that spot. The Loop ▾ button opens the loop menu (Overdub, Undo, loop B, chain, edit, clear); tap the loop bar to edit it. Hold any button for a short explanation. Buttons: filled = locked on, outlined = the loop plays it, white ring = you are holding it. Start a jam (in Help) picks a whole vibe in one tap. You can see this tour again under Help & tour on the Shape page.','#looprow','jam']];
 function tour(i){
   const hole=$('#tourhole'),card=$('#tourcard');if(i>=TOUR.length||i<0){hole.hidden=card.hidden=true;try{localStorage.setItem('gliss-tour','1')}catch(e){};return}
   const [h,txt,sel,pg]=TOUR[i];const tb=document.querySelector(`.tabs [data-pg="${pg}"]`);if(tb&&getComputedStyle(document.querySelector('.tabs')).display!=='none')tb.click();
@@ -1551,9 +1566,25 @@ function tour(i){
     $('#tskip').onclick=()=>{tour(99);document.querySelector('.tabs [data-pg="jam"]').click()};if($('#tnext'))$('#tnext').onclick=()=>tour(i+1)})}
 window.startTour=()=>{$('#sheet').classList.remove('open');tour(0)};
 if(matchMedia('(min-width:900px)').matches)document.querySelector('.tabs [data-pg="shape"]').click();
-try{if(!localStorage.getItem('gliss-tour'))setTimeout(()=>tour(0),400)}catch(e){}
+const VIBES=[['Night drive','Dark minor chords, warm Juno, steady beat',{set:2,key:9,bpm:100,kit:'808',swing:.1},'juno',true],
+  ['Lo-fi','Dusty tape, lazy swing, soft chords',{set:7,key:5,bpm:82,kit:'lofi',swing:.35},'lofi',true],
+  ['Anthem','Big supersaw lines and an arp',{set:1,key:7,bpm:126,kit:'909',swing:0},'lines',true,['arp']],
+  ['Neo-soul','Rich jazzy chords, brushes',{set:6,key:3,bpm:88,kit:'brush',swing:.25},'juno',true],
+  ['Synthwave','Wide strings, open voicing, 80s drums',{set:9,key:9,bpm:108,kit:'808',swing:0},'strings',true],
+  ['Floating','Glassy chords, no drums, lots of space',{set:0,key:0,bpm:84,space:.85},'glass',false,['spark']]];
+function quickStart(){$('#pbox').innerHTML='<h2>Start a jam<button class="chip" id="pclose">Just play</button></h2><div class="vibes">'+VIBES.map((v,i)=>`<button data-i="${i}"><b>${v[0]}</b><small>${v[1]}</small></button>`).join('')+'</div>';
+  $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
+  $('#pbox .vibes').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;const [n,,set,pre,beat,extra]=VIBES[+x.dataset.i];
+    Object.assign(P,set);if(!ctx)init();P.preset=pre;applySnd(PRESETS[pre][1]);Object.keys(latched).forEach(k=>delete latched[k]);if(beat)latched.beat=true;(extra||[]).forEach(k=>latched[k]=true);
+    applyMacros();momentsApply();UIR.forEach(f=>f());save();$('#pick').classList.remove('open');if(!playing){cur=0;start()}else{queued=0;qAt=-1;preStarted=false}paint();say(n+'. Tap the pads to play.')})}
+window.quickStart=quickStart;
+try{if(!localStorage.getItem('gliss-tour'))setTimeout(()=>tour(0),400);else setTimeout(quickStart,300)}catch(e){}
 ['pointerup','touchend','click'].forEach(ev=>addEventListener(ev,()=>{if(ctx&&ctx.state!=='running')ctx.resume()},true));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ctx&&playing)ctx.resume()});
+/* iPhone stops web audio in the background: fade out instead of a hard cut, and come back in smoothly */
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+document.addEventListener('visibilitychange',()=>{if(!ctx||!playing)return;const t=ctx.currentTime;
+  if(document.hidden){if(isIOS){hold(A.vol.gain,t);A.vol.gain.setTargetAtTime(0,t,.05)}}
+  else{ctx.resume();if(!fading){hold(A.vol.gain,ctx.currentTime);A.vol.gain.setTargetAtTime(P.vol,ctx.currentTime,.15)}}});
 </script>
 </body>
 </html>

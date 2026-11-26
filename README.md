@@ -13,21 +13,23 @@ Gliss is one HTML file with no build step and nothing to install. It runs in any
 
 On iPhone, switch the silent switch off, or web audio may stay muted.
 
-**Tip:** hold any button for a short explanation of what it does.
+**Tip:** hold any button for a short explanation of what it does. Buttons that are filled are locked on, outlined ones are played by the loop, and a white ring means you are holding it.
+
+When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating) that set the chords, sound, beat and tempo in one tap. You can open it again from Help.
 
 ## How to play
 
 **Jam page**
-- **Chord pads:** tap a pad and the notes glide to it on the next bar. Hold a pad for a passing chord that jumps back when you let go.
+- **Chord pads:** tap a pad and the notes glide to it on the next bar. A tap just after the bar still counts as on time. Hold a pad for a passing chord that jumps back when you let go.
 - **Two chords in a bar:** tap a second pad while the first is still waiting. The first lands on the bar, the second (marked ½) half a bar later. Tap a waiting pad again to take it back.
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
-- **Lead strip:** slide across it to play notes that always fit the chord.
+- **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
 - **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change. Hold Hook for a suggested hook. Tap again to let it go.
 - **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held.
-  - Add: Arp, Slow arp, Counter, Reese, Beat, Scatter, Sparkle
+  - Add: Arp, Counter, Reese, Beat, Sparkle
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords
-  - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Diverge, Converge
+  - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Breathe (each push spreads the notes apart or pulls them together)
 - **Arrive:** how the notes travel to each new chord. **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab rhythm.
 - **Filter pad:** left–right sets the cutoff, up–down the resonance.
 - **Play / Stop:** Stop fades out gently. Hold it to switch every locked button off at once.
