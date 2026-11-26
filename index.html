@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.878</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.879</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -1356,7 +1356,7 @@ function build(){
           P.preset='my'+i;save();UIR.forEach(f=>f());$('#pick').classList.remove('open');say('Saved as My preset '+i+'.')})}
       $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
       $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P[k]=typeof P[k]==='number'?+x.dataset.v:x.dataset.v==='true'?true:x.dataset.v==='false'?false:x.dataset.v;show();
-        if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);if(pr[3]){Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true)}applyMotion();applyMacros();applyDetune();momentsApply()}if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
+        if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);if(pr[3]){Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true)}applyMotion();applyMacros();applyDetune();momentsApply()}setTimeout(()=>UIR.forEach(f=>f()),0);if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
         if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(k==='eco'){applyFx();buildLines();say(ecoOn()?'Eco mode is on: lighter on the phone.':'Full quality.')}if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
         save();paint();$('#pick').classList.remove('open')});
     });show();UIR.push(show)});
