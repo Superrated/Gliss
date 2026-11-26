@@ -198,7 +198,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>beta 0.857</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>beta 0.858</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -498,7 +498,7 @@ function init(){
   A.h1.connect(A.hf);A.h2.connect(h2g);h2g.connect(A.hf);A.hf.connect(A.ha);A.ha.connect(A.hp);A.hp.connect(ho);ho.connect(A.mxA);
   [A.h1,A.h2].forEach(o=>A.bend.connect(o.detune));
   /* counter line */
-  A.c1=osc('triangle',440);A.c2=osc('sawtooth',440);A.c2.detune.value=11;A.cf=lp(2600,1);A.ca=g(0);const co=g(.5),c2g=g(.22);
+  A.c1=osc('triangle',440);A.c2=osc('sawtooth',440);A.c2.detune.value=11;A.cf=lp(2600,1);A.ca=g(0);const co=g(.5),c2g=g(.22);A.c2g=c2g;
   A.c1.connect(A.cf);A.c2.connect(c2g);c2g.connect(A.cf);A.cf.connect(A.ca);A.ca.connect(co);const coHP=ctx.createBiquadFilter();coHP.type='highpass';coHP.frequency.value=150;co.connect(coHP);coHP.connect(A.synth);A.co=co;
   A.r1=osc('sawtooth',440);A.r2=osc('sawtooth',440);A.r2.detune.value=14;A.rf=lp(3200,1.5);A.ra=g(0);const ro=g(.42);
   A.r1.connect(A.rf);A.r2.connect(A.rf);A.rf.connect(A.ra);A.ra.connect(ro);ro.connect(A.synth);
@@ -638,6 +638,8 @@ function applyMacros(){
   const dt=60/P.bpm*.75;A.dL.delayTime.setTargetAtTime(dt,t,.05);A.dR.delayTime.setTargetAtTime(dt,t,.05);
   A.vol.gain.setTargetAtTime(P.vol,t,.03);A.drum.gain.setTargetAtTime(P.dvol??.75,t,.03);applyDetune();A.ldF.frequency.setTargetAtTime(leadCap(),t,.04);
   applyDrive();
+  /* the counter follows how dark the sound is: never brighter than the chords, and less buzzy on dark sounds */
+  {const br=P.bright||1;A.cf.frequency.setTargetAtTime(Math.max(450,Math.min(2600,leadCap()*.8)),t,.05);A.c2g.gain.setTargetAtTime(.22*Math.min(1,br*1.6),t,.05);A.cf.Q.setTargetAtTime(br<.4?.6:1,t,.05)}
   /* mixer: 50 is the normal level of each layer */
   A.mxA.gain.setTargetAtTime(2*P.mxA,t,.03);A.strum.gain.setTargetAtTime(.7*2*P.mxL,t,.03);A.bo.gain.setTargetAtTime(.27*2*P.mxR,t,.03);A.co.gain.setTargetAtTime(.5*2*P.mxC,t,.03);if(A.spOut)A.spOut.gain.setTargetAtTime(.5*2*P.mxS,t,.03);
   const cl=.55*(.12+.88*Math.pow(P.chd,1.4));A.lineBus.gain.setTargetAtTime(cl,t,.04);lowBusSet(t);
