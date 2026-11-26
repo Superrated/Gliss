@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.875</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.876</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -498,9 +498,16 @@ function init(){
   A.lin=g(1);A.cm=g(1);A.sf=lp(18000,.6);A.gate.connect(A.sf);A.sf.connect(A.pumpG);A.pumpG.connect(A.cm);A.stk=g(1);A.stkF=lp(18000,.5);A.trem=pan(0);A.cm.connect(A.stk);A.stk.connect(A.stkF);A.stkF.connect(A.trem);A.trem.connect(A.lin);A.lin.connect(A.synth);
   {const lf=osc('sine',4.6);A.tremD=g(0);lf.connect(A.tremD);A.tremD.connect(A.trem.pan)}
   /* throws: the chords (only while you hold the button) go into a long dub echo or a big reverb wash */
-  {A.thE=g(0);A.thW=g(0);A.trem.connect(A.thE);A.trem.connect(A.thW);A.thW.connect(A.rHP);
-   const eL=ctx.createDelay(3),eR=ctx.createDelay(3),fb=g(.62),hp=ctx.createBiquadFilter(),dk=lp(2600,.5),pl=pan(-.8),pr=pan(.8);hp.type='highpass';hp.frequency.value=320;
-   A.thE.connect(hp);hp.connect(eL);eL.connect(pl);pl.connect(A.master);eL.connect(eR);eR.connect(pr);pr.connect(A.master);eR.connect(dk);dk.connect(fb);fb.connect(eL);A.thEL=eL;A.thER=eR}
+  {/* the throws take the synth after the filter pad, so they match what you hear */
+   A.thE=g(0);A.thW=g(0);A.fc.connect(A.thE);A.fc.connect(A.thW);
+   /* wash: a soft, dark and wide reverb send */
+   const wl=lp(5000,.5),wh=ctx.createBiquadFilter();wh.type='highpass';wh.frequency.value=350;A.thW.connect(wh);wh.connect(wl);wl.connect(A.rHP);
+   /* echo: dotted-eighth ping-pong; every repeat gets darker and thinner, with a slight wobble like a tape echo */
+   const eL=ctx.createDelay(3),eR=ctx.createDelay(3),fb=g(.5),hp=ctx.createBiquadFilter(),dk=lp(1800,.6),fh=ctx.createBiquadFilter(),pl=pan(-.7),pr=pan(.7),out=g(.75);
+   hp.type='highpass';hp.frequency.value=300;fh.type='highpass';fh.frequency.value=380;
+   A.thE.connect(hp);hp.connect(eL);eL.connect(pl);eL.connect(eR);eR.connect(pr);pl.connect(out);pr.connect(out);out.connect(A.master);
+   eR.connect(dk);dk.connect(fh);fh.connect(fb);fb.connect(eL);
+   const wob=osc('sine',.35),wg=g(.0012);wob.connect(wg);wg.connect(eL.delayTime);wg.connect(eR.delayTime);A.thEL=eL;A.thER=eR}
   const cw=g(.45);cw.connect(A.pumpG);
   [[.011,.31,-.8],[.017,.43,.8]].forEach(([dt,rate,pv])=>{const d=ctx.createDelay(.1);d.delayTime.value=dt;const l=osc('sine',rate),lg=g(.003),p=pan(pv);
     l.connect(lg);lg.connect(d.delayTime);A.sf.connect(d);d.connect(p);p.connect(cw)});
@@ -1313,7 +1320,7 @@ function build(){
   document.querySelectorAll('.pb').forEach(b=>{
     const k=b.dataset.k;let t0=0;
     if(k==='echo'||k==='wash'){let t0=0;const open=e=>{e.preventDefault();if(!ctx||!playing)return;const t=ctx.currentTime,G=k==='echo'?A.thE.gain:A.thW.gain;t0=t;b.classList.add('on');
-        if(k==='echo'){const dt=60/P.bpm*.75;A.thEL.delayTime.setTargetAtTime(dt,t,.01);A.thER.delayTime.setTargetAtTime(dt,t,.01)}hold(G,t);G.setTargetAtTime(k==='echo'?1:2.4,t,.01)};
+        if(k==='echo'){const dt=60/P.bpm*.75;A.thEL.delayTime.setTargetAtTime(dt,t,.01);A.thER.delayTime.setTargetAtTime(dt,t,.01)}hold(G,t);G.setTargetAtTime(k==='echo'?.9:1.3,t,.015)};
       const close=()=>{b.classList.remove('on');if(!ctx)return;const G=k==='echo'?A.thE.gain:A.thW.gain,tc=Math.max(ctx.currentTime,t0+60/P.bpm);hold(G,ctx.currentTime);G.setTargetAtTime(0,tc,.04)};
       b.addEventListener('pointerdown',open);b.addEventListener('pointerup',close);b.addEventListener('pointercancel',close);return}
     if(k==='bloomb'){let nx='div';b.addEventListener('pointerdown',e=>{e.preventDefault();bloomShot(nx);nx=nx==='div'?'conv':'div'});return}
