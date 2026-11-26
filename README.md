@@ -15,7 +15,7 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 
 **Tip:** hold any button for a short explanation of what it does. Buttons that are filled are locked on, outlined ones are played by the loop, and a white ring means you are holding it.
 
-When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating) that set the chords, sound, beat and tempo in one tap. You can open it again from Help.
+When you open Gliss, **Start a jam** offers eight vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating, Lounge keys, Deep dub) that set the chords, sound, beat and tempo in one tap. You can open it again from Help.
 
 ## How to play
 
@@ -44,6 +44,7 @@ When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthe
 - With **Loop repeats** set to vary a little (Shape › Chords), loops of 2 bars or more sometimes get a chord in their last half bar that pulls back to the start (a turnaround).
 
 **Shape page**
+- **Chord sounds** include laid-back ones: Rhodes and Wurli (struck keys with tremolo), Mellow analog, Dusk pad (both swell gently into each chord) and Deep stab. Laid-back presets: Rhodes lounge, Late night Wurli, Mellow drive, Sunday dusk and Deep dub (dark offbeat stabs, long echoes, deep bass). There is also a hypnotic **Deep** chord set.
 - **Sound:** Sound preset (sets everything in one go; Mirage, Lift, Full and Wild also set motion, space and some buttons), chord sound, lead sound, lead plays, ensemble, tape, voicing and stack.
 - **Chords:** Arrive (how notes travel to each chord), when chords start and glide, how lines move, before-chord moves, stab style, loop repeats.
 - **Arp & bass:** arp sound, shape (including 3, 5 and 7-step patterns that drift across the beat), speed, range, reese pattern, counter.
