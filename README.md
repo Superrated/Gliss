@@ -20,8 +20,8 @@ When you open Gliss, **Start a jam** offers eight vibes (Night drive, Lo-fi, Ant
 ## How to play
 
 **Jam page**
-- **Chord pads:** tap a pad and the notes glide to it on the next bar. A tap just after the bar still counts as on time.
-- **Two chords in a bar:** tap a second pad while the first is still waiting. The first lands on the bar, the second (marked ½) half a bar later. Tap a waiting pad again to take it back.
+- **Chord pads:** tap a pad and the notes glide to it on the next bar (or every 2 bars: the **1 bar / 2 bars** button under the pads). The waiting pad fills up from the bottom; when it is full the chord lands, with a short flash. A tap just after the line still counts as on time.
+- **Two chords in a bar:** tap a second pad while the first is still waiting. The first lands on the bar, the second (marked ½) halfway through the chord length (half a bar, or one bar with 2 bars). Tap a waiting pad again to take it back.
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
@@ -44,7 +44,7 @@ When you open Gliss, **Start a jam** offers eight vibes (Night drive, Lo-fi, Ant
 - With **Loop repeats** set to vary a little (Shape › Chords), loops of 2 bars or more sometimes get a chord in their last half bar that pulls back to the start (a turnaround).
 
 **Shape page**
-- **Chord sounds** include laid-back ones: Rhodes and Wurli (struck keys with tremolo), Mellow analog, Dusk pad (both swell gently into each chord) and Deep stab. Laid-back presets: Rhodes lounge, Late night Wurli, Mellow drive, Sunday dusk and Deep dub (dark offbeat stabs, long echoes, deep bass). There is also a hypnotic **Deep** chord set.
+- **Chord sounds** include laid-back ones: Rhodes and Wurli (electric-piano tones that are struck and ring out, with tremolo), Mellow analog, Dusk pad (both swell gently into each chord) and Deep stab. Laid-back presets: Rhodes lounge, Late night Wurli, Mellow drive, Sunday dusk and Deep dub (dark offbeat stabs, long echoes, deep bass). There is also a hypnotic **Deep** chord set.
 - **Sound:** Sound preset (sets everything in one go; Mirage, Lift, Full and Wild also set motion, space and some buttons), chord sound, lead sound, lead plays, ensemble, tape, voicing and stack.
 - **Chords:** Arrive (how notes travel to each chord), when chords start and glide, how lines move, before-chord moves, stab style, loop repeats.
 - **Arp & bass:** arp sound, shape (including 3, 5 and 7-step patterns that drift across the beat), speed, range, reese pattern, counter.
