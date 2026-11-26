@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.866</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.867</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -333,7 +333,7 @@ const CYC={preset:['SOUND PRESET',[['custom','Custom'],...Object.keys(PRESETS).m
   lin:['BEFORE CHORD',[['off','Nothing'],['swell','Swell'],['run','Note run'],['dip','Dip'],['mix','Mix']]],bpat:['REESE PLAYS',[['hold','Hold'],['pulse','Pulse'],['off','Offbeat'],['gate','Rolling 16ths'],['gal','Gallop']]],
   apat:['ARP SHAPE',[['up','Up'],['down','Down'],['updn','Up-down'],['spiral','Spiral'],['leap','Leap'],['chaos','Chaos'],['up:3','Up · 3 steps'],['up:5','Up · 5 steps'],['updn:7','Up-down · 7 steps'],['spiral:5','Spiral · 5 steps']]],arate:['ARP SPEED',[['8','1/8'],['16','1/16'],['16t','Triplet'],['32','1/32']]],
   kit:['DRUM KIT',Object.keys(KITS).map(k=>[k,KITS[k][0]])],fill:['BEAT FILLS',[['off','Off'],['4','Every 4 bars'],['8','Every 8 bars'],['var','Fills + variation']]],
-  ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
+  eco:['PHONE LOAD',[['auto','Auto'],['on','Eco (lighter)'],['off','Full quality']]],ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
   uni:['STACK',[[1,'1 voice'],[3,'3 voices'],[5,'5 voices'],[7,'7 voices']]],
   srhy:['STAB STYLE',[['8','8ths'],['off','Offbeats'],['dot','Syncopated'],['16','16ths'],['4','Quarters'],['tres','Tresillo 3-3-2'],['clave','Clave'],['garage','Garage'],['skank','Skank (2 & 4)'],['gallop','Gallop'],['fpump','Pump (filter)'],['fwob','Wobble (filter)'],['fgate','Gate (filter)'],['fsweep','Sweep (filter)']]],
   lvar:['LOOP REPEATS',[[true,'Vary a little'],[false,'Stay the same']]],
@@ -370,7 +370,7 @@ function applyMotion(){const m=P.mot;P.pulse=m<.05?0:Math.min(.85,.3+m*.6);P.dri
 applyMotion();
 
 if(!P.lmove)P.lmove='smooth';
-if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
+if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.eco)P.eco='auto';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
 if(P.lvar===undefined)P.lvar=true;if(!P.srhy)P.srhy='8';if(P.slen===undefined)P.slen=.35;if(!P.gridp)P.gridp='four';if(!P.fill)P.fill='off';if(!P.kit)P.kit='classic';if(P.dvol===undefined)P.dvol=.75;
 const UIR=[];if(!LEADS[P.lead])P.lead='bell';if(!P.lmode)P.lmode='pluck';if(!SOUNDS[P.snd])P.snd='saw';
 let loopOn={};const bsL=[0,0,0,0];
@@ -480,15 +480,9 @@ function init(){
   A.dIn=g(0);A.dL=ctx.createDelay(2);A.dR=ctx.createDelay(2);A.fb=g(.4);const dlp=lp(3200,.5),pL=pan(-.7),pR=pan(.7);
   const dHP=ctx.createBiquadFilter();dHP.type='highpass';dHP.frequency.value=220;A.sOut.connect(A.dIn);A.dIn.connect(dHP);dHP.connect(A.dL);A.dL.connect(pL);pL.connect(A.master);A.dL.connect(A.dR);A.dR.connect(pR);pR.connect(A.master);
   A.dR.connect(dlp);dlp.connect(A.fb);A.fb.connect(A.dL);
-  A.rIn=g(0);const conv=ctx.createConvolver(),sr=ctx.sampleRate,pre=Math.floor(sr*.024),len=Math.floor(sr*3.4),ir=ctx.createBuffer(2,len,sr);
-  for(let c=0;c<2;c++){const d=ir.getChannelData(c);let y=0;
-    /* a few early reflections, different left and right */
-    for(let e=0;e<9;e++){const at=pre+Math.floor(sr*(.004+e*.009+Math.random()*.006));if(at<len)d[at]+=(Math.random()<.5?-1:1)*(.5-e*.045)}
-    /* the tail: noise that gets darker as it fades */
-    let lo=0,lo2=0;for(let i=pre;i<len;i++){const k=(i-pre)/(len-pre),sec=(i-pre)/sr,n=Math.random()*2-1;lo+=(n-lo)*.06;lo2+=(lo-lo2)*.06;
-      const low=lo2*5.5,high=n-lo;/* lows ring for about 3 s, highs for about 1 s, so the tail gets darker and smoother */
-      d[i]+=(low*Math.exp(-2.3*sec)+high*.55*Math.exp(-6*sec)+(n*.25)*Math.exp(-14*sec))*Math.min(1,(i-pre)/(sr*.02))*.75*(1-k*.15)}}
-  conv.buffer=ir;const rHP=ctx.createBiquadFilter();rHP.type='highpass';rHP.frequency.value=280;const rLP=ctx.createBiquadFilter();rLP.type='lowpass';rLP.frequency.value=7500;
+  A.rIn=g(0);const conv=ctx.createConvolver();A.conv=conv;
+  conv.buffer=makeIR(ecoOn()?2:3.4);A.irEco=ecoOn();
+  const rHP=ctx.createBiquadFilter();rHP.type='highpass';rHP.frequency.value=280;const rLP=ctx.createBiquadFilter();rLP.type='lowpass';rLP.frequency.value=7500;
   A.sOut.connect(A.rIn);A.rIn.connect(rHP);rHP.connect(conv);A.rHP=rHP;conv.connect(rLP);rLP.connect(A.master);
   /* chord lines: gate -> chorus -> pump */
   A.lineBus=g(.9);A.gate=g(1);A.pumpG=g(1);
@@ -537,9 +531,9 @@ function init(){
 function buildLines(){
   if(!ctx)return;const t=ctx.currentTime;
   LN.forEach((L,i)=>{
-    const ext=[A.bend,A.lb[i],A.ld[i],A.lvg[i],A.lfk[i]],N=L.low?Math.min(P.uni|0,3):P.uni|0;
-    if(L.nodes){const o=L.nodes;o.vg.gain.setTargetAtTime(0,t,.02);ext.forEach(n=>{try{n.disconnect(o.sum)}catch(e){}});o.oscs.forEach(x=>{try{A.lbl[i].disconnect(x.bg)}catch(e){}});
-      setTimeout(()=>{o.all.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}})},300)}
+    const U=ecoOn()?Math.min(P.uni|0,3):P.uni|0,ext=[A.bend,A.lb[i],A.ld[i],A.lvg[i],A.lfk[i]],N=L.low?Math.min(U,3):U;
+    if(L.nodes){const o=L.nodes;hold(o.vg.gain,t);o.vg.gain.setTargetAtTime(0,t+.01,.09);ext.forEach(n=>{try{n.disconnect(o.sum)}catch(e){}});o.oscs.forEach(x=>{try{A.lbl[i].disconnect(x.bg)}catch(e){}});
+      setTimeout(()=>{o.all.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}})},800)}
     const pitch=ctx.createConstantSource();pitch.offset.value=L.c;pitch.start();
     const sum=ctx.createGain();pitch.connect(sum);ext.forEach(n=>n.connect(sum));
     const lfo=ctx.createOscillator();lfo.frequency.value=.11+.07*i;lfo.start();const lg=ctx.createGain();lg.gain.value=0;lfo.connect(lg);lg.connect(sum);
@@ -559,7 +553,7 @@ function buildLines(){
     }
     all.push(mg);if(sg)all.push(...shimNodes);
     L.nodes={pitch,sum,lg,vg,lf,pg,mg,sg,oscs,all};
-    if(playing)vg.gain.setTargetAtTime(1,t+.03,.05);
+    if(playing)vg.gain.setTargetAtTime(1,t+.01,.09);
   });
   applyDetune();applyVary(t);
 }
@@ -662,9 +656,18 @@ const v=Math.tanh(x[n]*1.6-r*s[3]);s[0]+=g*(v-s[0]);s[1]+=g*(s[0]-s[1]);s[2]+=g*
 this.fc=fcE;this.r=rE;return true}}registerProcessor('gliss-ladder',L)`;
 function loadLadder(){if(!ctx||!ctx.audioWorklet||A.ladT)return;A.ladT=1;try{ctx.audioWorklet.addModule('data:application/javascript;base64,'+btoa(LADDER)).catch(()=>ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([LADDER],{type:'application/javascript'})))).then(()=>{
   A.lad=new AudioWorkletNode(ctx,'gliss-ladder',{outputChannelCount:[2]});A.lad.connect(A.fr);setFilterType();applyMacros()}).catch(()=>{})}catch(e){}}
-function setFilterType(){if(!ctx)return;if(!A.lad){if(P.ftype==='ladder')loadLadder();return}const lad=P.ftype==='ladder';if(A.ladOn===lad)return;A.ladOn=lad;
+function setFilterType(){if(!ctx)return;if(!A.lad){if(P.ftype==='ladder')loadLadder();return}const lad=P.ftype==='ladder'&&!ecoOn();if(A.ladOn===lad)return;A.ladOn=lad;
   try{A.bkS.disconnect(A.f1)}catch(e){}try{A.bkS.disconnect(A.lad)}catch(e){}A.bkS.connect(lad?A.lad:A.f1)}
-function applyFx(){if(!ctx)return;setFilterType();const t=ctx.currentTime,e=P.ens,tp=P.tape==='on';
+/* Eco mode: lighter sound engine for weaker phones */
+const weakDevice=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=3;
+const ecoOn=()=>P.eco==='on'||(P.eco!=='off'&&weakDevice);
+function makeIR(secs){const sr=ctx.sampleRate,pre=Math.floor(sr*.024),len=Math.floor(sr*secs),ir=ctx.createBuffer(2,len,sr);
+  for(let c=0;c<2;c++){const d=ir.getChannelData(c);
+    for(let e=0;e<9;e++){const at=pre+Math.floor(sr*(.004+e*.009+Math.random()*.006));if(at<len)d[at]+=(Math.random()<.5?-1:1)*(.5-e*.045)}
+    let lo=0,lo2=0;for(let i=pre;i<len;i++){const k=(i-pre)/(len-pre),sec=(i-pre)/sr,n=Math.random()*2-1;lo+=(n-lo)*.06;lo2+=(lo-lo2)*.06;
+      d[i]+=(lo2*5.5*Math.exp(-2.3*sec)+(n-lo)*.55*Math.exp(-6*sec)+(n*.25)*Math.exp(-14*sec))*Math.min(1,(i-pre)/(sr*.02))*.75*(1-k*.15)}}
+  return ir}
+function applyFx(){if(!ctx)return;setFilterType();A.shape.oversample=ecoOn()?'2x':'4x';if(A.conv&&A.irEco!==ecoOn()){A.irEco=ecoOn();A.conv.buffer=makeIR(ecoOn()?2:3.4)}const t=ctx.currentTime,e=P.ens,tp=P.tape==='on';
   A.eW.gain.setTargetAtTime(e==='off'?0:e==='light'?.5:.8,t,.1);A.eD.gain.setTargetAtTime(e==='off'?0:e==='light'?.0018:.0034,t,.1);A.eD2.gain.setTargetAtTime(e==='deep'?.0012:0,t,.1);
   A.tD.delayTime.setTargetAtTime(tp?.008:0,t,.3);A.tW.gain.setTargetAtTime(tp?.0016:0,t,.3);A.tF.gain.setTargetAtTime(tp?.00009:0,t,.3);
   A.tLP.frequency.setTargetAtTime(tp?6500:20000,t,.2);A.tH.gain.setTargetAtTime(tp?.0045:0,t,.3)}
@@ -1034,7 +1037,7 @@ const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and soun
 Object.keys(CYC).forEach(k=>{if(!TIPS['cy-'+k])TIPS['cy-'+k]=CYC[k][0].charAt(0)+CYC[k][0].slice(1).toLowerCase()+': tap to choose.'});
 Object.assign(TIPS,{'cy-preset':'Sets the chord sound, arp sound, lead, ensemble, voicing, tape and drive in one go.','cy-quant':'When a tapped chord lands: next bar, every 2 bars, next beat or right away. The button under the pads switches between 1 and 2 bars.','cy-pre':'When the notes start gliding to the next chord.',
   'cy-lmove':'How the chord notes move: to the closest note, all together, or in big leaps.','cy-lin':'A little extra just before each chord change.','cy-lvar':'Small changes on repeats of the loop: a brighter chord now and then, a different ending for the hook, and a chord in the last half bar that pulls back to the start.','cy-uni':'How many detuned voices each chord note has.',
-  'cy-vce':'Close keeps the chord notes together; Open spreads them wide.','cy-ens':'A warm stereo chorus on the chords.','cy-ftype':'Clean is precise and light on the phone; Ladder is warmer and its resonance sings when you sweep the filter pad.','cy-tape':'Worn cassette: slow wobble, hiss and dull highs.','cy-alen':'Short patterns of 3, 5 or 7 notes drift across the beat.','cy-frhy':'Opens and closes the filter in rhythm.'});
+  'cy-vce':'Close keeps the chord notes together; Open spreads them wide.','cy-ens':'A warm stereo chorus on the chords.','cy-eco':'Auto turns on Eco mode on weaker phones. Eco uses up to 3 voices per note, the Clean filter, lighter distortion and a shorter reverb, so it does not crackle. Full quality always uses everything.','cy-ftype':'Clean is precise and light on the phone; Ladder is warmer and its resonance sings when you sweep the filter pad.','cy-tape':'Worn cassette: slow wobble, hiss and dull highs.','cy-alen':'Short patterns of 3, 5 or 7 notes drift across the beat.','cy-frhy':'Opens and closes the filter in rhythm.'});
 let tipT=0,tipShown=false;
 document.addEventListener('pointerdown',e=>{tipShown=false;const el=e.target.closest('.pb,#cyc button,#cycD button,#loct,#qbtn,#srbtn,#setbtn,#loop,#lbars,#rec,#mixbtn,#savebtn,#expbtn');if(!el)return;
   const key=el.classList.contains('pb')?el.dataset.k:el.id,txt=TIPS[key];if(!txt)return;tipShown=false;clearTimeout(tipT);
@@ -1314,7 +1317,7 @@ function build(){
   $('#loct').addEventListener('click',()=>{P.loct={0:12,12:-12,'-12':0}[P.loct||0];save();showOct();paint()});showOct();
   const DRUMK=['kit','fill'];$('#cyc').innerHTML=Object.keys(CYC).filter(k=>!DRUMK.includes(k)).map(k=>`<button id="cy-${k}"></button>`).join('');$('#cycD').innerHTML=DRUMK.map(k=>`<button id="cy-${k}"></button>`).join('');
   /* Shape options in three sections, one shown at a time */
-  const SEC={sound:['Sound',['preset','snd','lead','lmode','ftype','ens','tape','vce','uni']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
+  const SEC={sound:['Sound',['preset','snd','lead','lmode','ftype','ens','tape','vce','uni','eco']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
   const showSec=()=>{$('#shsec').innerHTML=Object.keys(SEC).map(k=>`<button class="chip ${P.shsec===k?'on':''}" data-s="${k}">${SEC[k][0]}</button>`).join('');
     Object.keys(CYC).forEach(k=>{const el=$('#cy-'+k);if(el&&!['kit','fill'].includes(k))el.hidden=!SEC[P.shsec][1].includes(k)})};
   $('#shsec').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.shsec=x.dataset.s;save();showSec()});
@@ -1329,7 +1332,7 @@ function build(){
       $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
       $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P[k]=typeof P[k]==='number'?+x.dataset.v:x.dataset.v==='true'?true:x.dataset.v==='false'?false:x.dataset.v;show();
         if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true);applyMotion();applyMacros();momentsApply()}if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
-        if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
+        if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(k==='eco'){applyFx();buildLines();say(ecoOn()?'Eco mode is on: lighter on the phone.':'Full quality.')}if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
         save();paint();$('#pick').classList.remove('open')});
     });show();UIR.push(show)});
   $('#pick').addEventListener('click',e=>{if(e.target.id==='pick')$('#pick').classList.remove('open')});

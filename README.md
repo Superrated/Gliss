@@ -46,6 +46,7 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 
 **Shape page**
 - **Chord sounds** include laid-back ones: Rhodes and Wurli (electric-piano tones that are struck and ring out, with tremolo), Mellow analog, Dusk pad (both swell gently into each chord) and Deep stab. Laid-back presets: Rhodes lounge, Late night Wurli, Mellow drive, Sunday dusk and Deep dub (dark offbeat stabs, long echoes, deep bass). There is also a hypnotic **Deep** chord set.
+- **Phone load:** Auto (default) switches to Eco on weaker phones: up to 3 voices per note, the Clean filter, lighter distortion and a shorter reverb, so it does not crackle. You can also choose Eco or Full quality yourself.
 - **Filter:** Clean, or Ladder (a warm analog-style filter whose resonance sings when you sweep the filter pad; used by the warm and laid-back presets).
 - **Your own presets:** in the Sound preset list, save the sound you have now as My preset 1–4.
 - **Sound:** Sound preset (sets everything in one go; Mirage, Lift, Full and Wild also set motion, space and some buttons), chord sound, lead sound, lead plays, ensemble, tape, voicing and stack.
