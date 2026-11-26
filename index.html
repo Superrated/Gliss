@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.877</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.878</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -302,28 +302,28 @@ const KITS={classic:['Classic',{k0:165,k1:42,kd:.12,kl:.32,kv:1,kc:0,sf:1900,sl:
   brush:['Brush',{k0:95,k1:50,kd:.08,kl:.28,kv:.6,kc:0,sf:3800,sl:.34,st:0,sv:.55,hf:6000,hl:.09,hv:.5}]};
 const KIT=()=>(KITS[P.kit]||KITS.classic)[1];
 const PRESETS={
-  lines:['Classic lines',{snd:'saw',asnd:'saw',lead:'gsaw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.5,space:.6,det:.32,bloom:.4}],
-  strings:['Wide strings',{snd:'strings',asnd:'glass',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.55,space:.72,det:.26,bloom:.45}],
-  juno:['Warm Juno',{snd:'poly',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'off',drv:.28,ftype:'ladder'},{mot:.45,space:.55,det:.18,bloom:.3}],
-  lofi:['Lo-fi tape',{snd:'warm',asnd:'bell',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3}],
-  glass:['Glass night',{snd:'glass',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.5,space:.78,det:.18,bloom:.35}],
-  grit:['Gritty',{snd:'growl',asnd:'saw',lead:'acid',ens:'light',vce:'close',tape:'off',drv:.6,ftype:'clean'},{mot:.55,space:.45,det:.4,bloom:.4}],
-  brass:['Brass anthem',{snd:'brass',asnd:'pluck',lead:'fifths',ens:'light',vce:'open',tape:'off',drv:.35,ftype:'clean'},{mot:.5,space:.55,det:.22,bloom:.35}],
-  hollow:['Hollow tape',{snd:'hollow',asnd:'glass',lead:'whistle',ens:'light',vce:'close',tape:'on',drv:.22,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3}]};
+  lines:['Classic lines',{snd:'saw',asnd:'saw',lead:'gsaw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.5,space:.6,det:.32,bloom:.4,arr:'fan',pre:16,lmove:'smooth',spread:.35}],
+  strings:['Wide strings',{snd:'strings',asnd:'glass',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.55,space:.72,det:.26,bloom:.45,arr:'sfan',pre:16,lmove:'smooth',spread:.4}],
+  juno:['Warm Juno',{snd:'poly',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'off',drv:.28,ftype:'ladder'},{mot:.45,space:.55,det:.18,bloom:.3,arr:'curve',pre:8,lmove:'smooth',spread:.2}],
+  lofi:['Lo-fi tape',{snd:'warm',asnd:'bell',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3,arr:'late',pre:8,lmove:'smooth',spread:.25}],
+  glass:['Glass night',{snd:'glass',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'off',drv:.15,ftype:'clean'},{mot:.5,space:.78,det:.18,bloom:.35,arr:'sfan',pre:16,lmove:'smooth',spread:.35}],
+  grit:['Gritty',{snd:'growl',asnd:'saw',lead:'acid',ens:'light',vce:'close',tape:'off',drv:.6,ftype:'clean'},{mot:.55,space:.45,det:.4,bloom:.4,arr:'late',pre:4,lmove:'wide',spread:.3}],
+  brass:['Brass anthem',{snd:'brass',asnd:'pluck',lead:'fifths',ens:'light',vce:'open',tape:'off',drv:.35,ftype:'clean'},{mot:.5,space:.55,det:.22,bloom:.35,arr:'rise',pre:8,lmove:'par',spread:.2}],
+  hollow:['Hollow tape',{snd:'hollow',asnd:'glass',lead:'whistle',ens:'light',vce:'close',tape:'on',drv:.22,ftype:'ladder'},{mot:.45,space:.62,det:.2,bloom:.3,arr:'fall',pre:8,lmove:'smooth',spread:.25}]};
 /* laid-back presets */
-Object.assign(PRESETS,{lounge:['Rhodes lounge',{snd:'rhodes',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.4,space:.7,chd:.8,lin:'off',filt:.85,det:.08,bloom:.15}],
-  wurli:['Late night Wurli',{snd:'wurli',asnd:'pluck',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.28,ftype:'ladder'},{mot:.38,space:.58,lin:'off',filt:.8,det:.06,bloom:.15}],
-  mellow:['Mellow drive',{snd:'mellow',asnd:'glass',lead:'square',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'ladder'},{mot:.45,space:.65,lin:'swell',filt:.75,det:.16,bloom:.3}],
-  dusk:['Sunday dusk',{snd:'dusk',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.15,ftype:'ladder'},{mot:.5,space:.8,lin:'swell',filt:.75,det:.22,bloom:.35}],
-  deep:['Deep dub',{snd:'deep',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'on',drv:.28,ftype:'ladder'},{mot:.35,space:.85,lin:'off',srhy:'off',filt:.5,det:.18,bloom:.25},['stab','bass','beat']]});
+Object.assign(PRESETS,{lounge:['Rhodes lounge',{snd:'rhodes',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.3,ftype:'ladder'},{mot:.4,space:.7,chd:.8,lin:'off',filt:.85,det:.08,bloom:.15,arr:'sfan',pre:16,lmove:'smooth',spread:.3}],
+  wurli:['Late night Wurli',{snd:'wurli',asnd:'pluck',lead:'whistle',ens:'light',vce:'open',tape:'on',drv:.28,ftype:'ladder'},{mot:.38,space:.58,lin:'off',filt:.8,det:.06,bloom:.15,arr:'late',pre:16,lmove:'smooth',spread:.25}],
+  mellow:['Mellow drive',{snd:'mellow',asnd:'glass',lead:'square',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'ladder'},{mot:.45,space:.65,lin:'swell',filt:.75,det:.16,bloom:.3,arr:'curve',pre:16,lmove:'smooth',spread:.3}],
+  dusk:['Sunday dusk',{snd:'dusk',asnd:'bell',lead:'bell',ens:'deep',vce:'open',tape:'on',drv:.15,ftype:'ladder'},{mot:.5,space:.8,lin:'swell',filt:.75,det:.22,bloom:.35,arr:'sfan',pre:16,lmove:'smooth',spread:.45}],
+  deep:['Deep dub',{snd:'deep',asnd:'pluck',lead:'square',ens:'light',vce:'close',tape:'on',drv:.28,ftype:'ladder'},{mot:.35,space:.85,lin:'off',srhy:'off',filt:.5,det:.18,bloom:.25,arr:'glide',pre:2,lmove:'smooth',spread:.1},['stab','bass','beat']]});
 /* the four old scenes are presets too: they also set motion, space and a few buttons */
-Object.assign(PRESETS,{mirage:['Mirage',{snd:'saw',asnd:'saw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.45,chd:.85,space:.7,lin:'off',det:.3,bloom:.4},[]],
-  lift:['Lift',{snd:'strings',asnd:'glass',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'clean'},{mot:.6,chd:.75,space:.6,lin:'swell',srhy:'fsweep',det:.26,bloom:.4},['counter','stab']],
-  full:['Full',{snd:'saw',asnd:'pluck',ens:'light',vce:'close',tape:'off',drv:.32,ftype:'clean'},{mot:.55,chd:.65,space:.45,lin:'swell',srhy:'fpump',det:.32,bloom:.4},['arp','bass','beat','stab']],
-  wild:['Wild',{snd:'growl',asnd:'saw',ens:'deep',vce:'open',tape:'off',drv:.5,ftype:'clean'},{mot:.75,chd:.7,space:.5,lin:'mix',srhy:'fgate',det:.42,bloom:.45},['arp','bass','beat','stab']]});
+Object.assign(PRESETS,{mirage:['Mirage',{snd:'saw',asnd:'saw',ens:'light',vce:'close',tape:'off',drv:.2,ftype:'clean'},{mot:.45,chd:.85,space:.7,lin:'off',det:.3,bloom:.4,arr:'fan',pre:16,lmove:'smooth',spread:.35},[]],
+  lift:['Lift',{snd:'strings',asnd:'glass',ens:'light',vce:'open',tape:'off',drv:.2,ftype:'clean'},{mot:.6,chd:.75,space:.6,lin:'swell',srhy:'fsweep',det:.26,bloom:.4,arr:'rise',pre:16,lmove:'smooth',spread:.35},['counter','stab']],
+  full:['Full',{snd:'saw',asnd:'pluck',ens:'light',vce:'close',tape:'off',drv:.32,ftype:'clean'},{mot:.55,chd:.65,space:.45,lin:'swell',srhy:'fpump',det:.32,bloom:.4,arr:'curve',pre:8,lmove:'smooth',spread:.25},['arp','bass','beat','stab']],
+  wild:['Wild',{snd:'growl',asnd:'saw',ens:'deep',vce:'open',tape:'off',drv:.5,ftype:'clean'},{mot:.75,chd:.7,space:.5,lin:'mix',srhy:'fgate',det:.42,bloom:.45,arr:'mix',pre:4,lmove:'wide',spread:.4},['arp','bass','beat','stab']]});
 /* your own presets: four slots kept on this device */
 const MYP=(()=>{try{return JSON.parse(localStorage.getItem('gliss-mypre')||'[]')}catch(e){return []}})();
-const MYX=['mot','space','chd','filt','res','srhy','lin','det','bloom'];
+const MYX=['mot','space','chd','filt','res','srhy','lin','det','bloom','arr','pre','lmove','spread'];
 function myPresetsIn(){MYP.forEach((m,i)=>{if(m)PRESETS['my'+(i+1)]=['My preset '+(i+1),m.snd,m.ex]})}
 const PLV={lounge:1,hollow:.8,mellow:.3,mirage:.7,juno:.65,strings:.6,dusk:.38,wild:.38};
 myPresetsIn();MYP.forEach((m,i)=>{if(m)PLV['my'+(i+1)]=m.lv});
