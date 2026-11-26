@@ -1,6 +1,6 @@
 # Gliss
 
-A live-playable synth for gliding chords, by Superrated.
+A live-playable synth for gliding chords, by Superrated. Currently in beta.
 
 Six chord pads, and every note of the chord slides to the next chord as its own line. You can add arps, a counter line, a reese bass and a beat, play a lead on top, loop it, and build it into a track.
 
