@@ -50,7 +50,7 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 .lc.sel{outline:2px solid var(--hot);outline-offset:1px}.lc.lnow{box-shadow:inset 0 -4px 0 var(--l3)}
 .lpads{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.lpads .chip{height:40px;padding:0 6px;font-size:11.5px;overflow:hidden;text-overflow:ellipsis}.lpads .chip:disabled{opacity:.35}
 #tl{cursor:pointer}
-#hook,#strum{position:relative}#strum::after{content:'';position:absolute;right:5px;top:5px;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.55}
+#hook{position:relative}
 .mixl{display:grid;gap:8px}.mx{display:grid;grid-template-columns:70px 1fr 34px;align-items:center;gap:10px;font-size:13px;font-weight:600}.mx output{text-align:right;color:var(--mute);font-size:12px}.mx input{width:100%}
 .shsec{display:flex;gap:6px;flex:none}.shsec .chip{flex:1;height:34px}
 .cyc button[hidden]{display:none}
@@ -211,14 +211,14 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.887</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.888</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
   </header>
   <div class="pages">
     <section class="pg" id="pg-jam">
-      <div class="scoperow"><div class="scope"><canvas id="cv"></canvas><div class="now" id="now"></div><div class="next" id="next"></div></div><div class="hs"><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button><button class="chip" id="strum" aria-label="Strum: a fast run up the chord; hold for a run down">Strum</button></div></div>
+      <div class="scoperow"><div class="scope"><canvas id="cv"></canvas><div class="now" id="now"></div><div class="next" id="next"></div></div><div class="hs"><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button></div></div>
       <div class="row" id="looprow"><button class="chip" id="setbtn" style="height:32px" aria-label="Change chord set"></button><canvas id="tl"></canvas><button class="chip" id="lbars" style="height:32px" aria-label="Loop length"></button><button class="chip" id="lab" style="height:32px;padding:0 9px" aria-label="Switch between loop A and loop B; hold for a chain like A A B A" hidden></button><button class="chip" id="undo" style="height:32px;padding:0 10px" aria-label="Undo last loop change" hidden>↶</button><button class="chip" id="loop" style="height:32px">Loop</button></div>
       <div class="bends" id="bends"></div>
       <div class="pads" id="pads"></div>
@@ -1061,14 +1061,14 @@ const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and soun
   stab:'Chops the chords in rhythm: plucks, or a pumping, wobbling, gating or sweeping filter. Pick the style with the Stab button below the pads.',soft:'Makes the chords quieter, so other layers come forward.',nochd:'Mutes the chords; everything else keeps playing.',
   low:'Only the low notes and the lowest chord note play.',vswell:'Two of the notes swell up and down.',vpulse:'The top notes pulse in rhythm.',stag:'The notes come in one by one after each change.',shim:'Adds a shimmer an octave above the top notes.',
   echo:'Echo throw: while you hold it, the chords go into a long dub echo that keeps ringing after you let go. Tap just before a chord change.',wash:'Wash: while you hold it, the chords go into a big reverb that hangs on after you let go.',pedal:'Pedal bass: the bass holds the note it has now while the chords keep moving above it. Switch off to let it follow again.',bloomb:'Each push alternates: the notes spread apart, then the next push pulls them together.',
-  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.',strum:'Strum: tap for a fast harp run up the chord, hold for a run down. Lovely between chord changes; try it with the Harp lead sound and Long sustain.','cy-astrum':'Plays a harp run over every new chord, alternating up and down. Used by the dreamy presets.','cy-lsus':'How long strip and Strum notes ring: Short, Long or Endless.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
+  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.','cy-astrum':'Plays a harp run over every new chord, alternating up and down. Used by the dreamy presets.','cy-lsus':'How long strip notes ring: Short, Long or Endless.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
   loop:'Tap to record a loop. While it plays, this opens the loop menu: Overdub, Undo, loop A and B, chain, edit and clear.',lbars:'How many bars the loop records.',rec:'Records what you hear as a WAV file.',mixbtn:'A level for each layer.',savebtn:'Save the whole song in one of four slots.',tl:'The loop bar. Tap it to edit the loop.'};
 Object.keys(CYC).forEach(k=>{if(!TIPS['cy-'+k])TIPS['cy-'+k]=CYC[k][0].charAt(0)+CYC[k][0].slice(1).toLowerCase()+': tap to choose.'});
 Object.assign(TIPS,{'cy-preset':'Sets the chord sound, arp sound, lead, ensemble, voicing, tape and drive in one go.','cy-quant':'When a tapped chord lands: next bar, every 2 bars, next beat or right away. The button under the pads switches between 1 and 2 bars.','cy-pre':'When the notes start gliding to the next chord.',
   'cy-lmove':'How the chord notes move: to the closest note, all together, or in big leaps.','cy-lin':'A little extra just before each chord change.','cy-lvar':'Small changes on repeats of the loop: a brighter chord now and then, a different ending for the hook, and a chord in the last half bar that pulls back to the start.','cy-uni':'How many detuned voices each chord note has.',
   'cy-vce':'Close keeps the chord notes together; Open spreads them wide.','cy-ens':'A warm stereo chorus on the chords.','cy-eco':'Auto turns on Eco mode on weaker phones. Eco uses up to 3 voices per note, the Clean filter, lighter distortion and a shorter reverb, so it does not crackle. Full quality always uses everything.','cy-ftype':'Clean is precise and light on the phone; Ladder is warmer and its resonance sings when you sweep the filter pad.','cy-tape':'Worn cassette: slow wobble, hiss and dull highs.','cy-alen':'Short patterns of 3, 5 or 7 notes drift across the beat.','cy-frhy':'Opens and closes the filter in rhythm.'});
 let tipT=0,tipShown=false;
-document.addEventListener('pointerdown',e=>{tipShown=false;const el=e.target.closest('.pb,#cyc button,#cycD button,#loct,#qbtn,#strum,#srbtn,#setbtn,#loop,#lbars,#rec,#mixbtn,#savebtn,#expbtn');if(!el)return;
+document.addEventListener('pointerdown',e=>{tipShown=false;const el=e.target.closest('.pb,#cyc button,#cycD button,#loct,#qbtn,#srbtn,#setbtn,#loop,#lbars,#rec,#mixbtn,#savebtn,#expbtn');if(!el)return;
   const key=el.classList.contains('pb')?el.dataset.k:el.id,txt=TIPS[key];if(!txt)return;tipShown=false;clearTimeout(tipT);
   tipT=setTimeout(()=>{const tp=$('#tip'),r=el.getBoundingClientRect();tp.textContent=txt;tp.hidden=false;const w=Math.min(280,innerWidth-20);tp.style.width=w+'px';
     tp.style.left=Math.max(10,Math.min(innerWidth-w-10,r.left+r.width/2-w/2))+'px';const above=r.top>140;tp.style.top=above?'':r.bottom+8+'px';tp.style.bottom=above?innerHeight-r.top+8+'px':'';tipShown=true},600)},true);
@@ -1464,12 +1464,6 @@ function build(){
     $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>{$('#pick').classList.remove('open');UIR.forEach(f=>f())});
     $('#pbox .mixl').addEventListener('input',e=>{const x=e.target;if(!x.dataset.k)return;P[x.dataset.k]=+x.value;x.nextElementSibling.textContent=Math.round(x.value*100);fTouch[x.dataset.k]=performance.now();applyMacros();save()})});
   /* export: WAV recording, the loop as MIDI, and the whole song as a .gliss file to keep or open on another device */
-  /* strum: the chord as a fast run over two octaves, up on a tap, down on a hold */
-  {const sb=$('#strum');let ht=0,longDone=false;const run=down=>{if(!ctx||!playing){say('Press Play first.');return}const l=strumLad(),n=Math.min(l.length,14),lo=Math.max(0,Math.floor((l.length-n)/2));
-      strumRun(ctx.currentTime+.02,cur,down);buzz(8)};
-    sb.addEventListener('pointerdown',()=>{longDone=false;ht=setTimeout(()=>{longDone=true;run(true)},450)});
-    ['pointerup','pointercancel','pointerleave'].forEach(ev=>sb.addEventListener(ev,()=>clearTimeout(ht)));
-    sb.addEventListener('click',()=>{if(longDone){longDone=false;return}run(false)})}
   $('#qbtn').addEventListener('click',()=>{P.quant=P.quant==='2bar'?'bar':'2bar';save();UIR.forEach(f=>f());paint();say(P.quant==='2bar'?'Chords change every 2 bars.':'Chords change every bar.')});
   $('#expbtn').addEventListener('click',()=>{
     $('#pbox').innerHTML='<h2>Export<button class="chip" id="pclose">Done</button></h2><div class="lmenu">'+
