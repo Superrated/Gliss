@@ -11,6 +11,7 @@ Gliss is one HTML file with no build step and nothing to install. It runs in any
 - **As an app (recommended):** open **https://superrated.github.io/Gliss/** on your phone or tablet.
   - Android (Chrome): menu ⋮ → **Install app** (or "Add to Home screen").
   - iPhone / iPad (Safari): Share → **Add to Home Screen**.
+  - Or tap **⬇ Install Gliss as an app** at the top of the Start a jam screen (also in Help). On iPhone it shows the steps.
   - It then opens full screen from its own icon, works offline, and updates itself when a new version is online.
 - **In a browser:** open the same link, or download `index.html` and open it in Chrome, Edge, Safari or Firefox.
 
