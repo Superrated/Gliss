@@ -123,7 +123,7 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 .bs{position:relative;height:52px;border-radius:12px;background:linear-gradient(180deg,#1b1f3a,#141730);border:1px solid #262b4e;overflow:hidden;touch-action:none;
   display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;cursor:ew-resize}
 .bs::before{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--b,0)*100%);background:var(--c);opacity:.5}
-.bs span{position:relative;font-size:10px;letter-spacing:.03em}.bs{border-bottom:3px solid var(--c)}
+.bs span{position:relative;font-size:10px;letter-spacing:.03em}.glow{position:absolute;inset:0;display:flex;pointer-events:none}.glow i{flex:1;transition:background .25s}.glow i.r{background:linear-gradient(180deg,rgba(255,190,90,.42),rgba(255,190,90,.16))}.glow i.t{background:rgba(201,205,240,.12)}.bs{border-bottom:3px solid var(--c)}
 .faders{display:grid;gap:5px;flex:none}
 .fd{display:grid;grid-template-columns:62px 1fr 74px;align-items:center;gap:8px;height:26px}
 #fadersS{grid-template-columns:1fr 1fr;column-gap:16px;row-gap:3px}
@@ -211,7 +211,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.888</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.889</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -342,7 +342,7 @@ const CYC={preset:['SOUND PRESET',[['custom','Custom'],...Object.keys(PRESETS).m
   lin:['BEFORE CHORD',[['off','Nothing'],['swell','Swell'],['run','Note run'],['dip','Dip'],['mix','Mix']]],bpat:['REESE PLAYS',[['hold','Hold'],['pulse','Pulse'],['off','Offbeat'],['gate','Rolling 16ths'],['gal','Gallop']]],
   apat:['ARP SHAPE',[['up','Up'],['down','Down'],['updn','Up-down'],['spiral','Spiral'],['leap','Leap'],['chaos','Chaos'],['up:3','Up · 3 steps'],['up:5','Up · 5 steps'],['updn:7','Up-down · 7 steps'],['spiral:5','Spiral · 5 steps']]],arate:['ARP SPEED',[['8','1/8'],['16','1/16'],['16t','Triplet'],['32','1/32']]],
   kit:['DRUM KIT',Object.keys(KITS).map(k=>[k,KITS[k][0]])],fill:['BEAT FILLS',[['off','Off'],['4','Every 4 bars'],['8','Every 8 bars'],['var','Fills + variation']]],
-  eco:['PHONE LOAD',[['auto','Auto'],['on','Eco (lighter)'],['off','Full quality']]],astrum:['AUTO STRUM',[['off','Off'],['on','On chord change']]],lsus:['STRIP SUSTAIN',[['short','Short'],['long','Long'],['endless','Endless']]],ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
+  eco:['PHONE LOAD',[['auto','Auto'],['on','Eco (lighter)'],['off','Full quality']]],lcol:['LEAD COLOUR',[['dreamy','Dreamy'],['chord','In chord']]],astrum:['AUTO STRUM',[['off','Off'],['on','On chord change']]],lsus:['STRIP SUSTAIN',[['short','Short'],['long','Long'],['endless','Endless']]],ftype:['FILTER',[['clean','Clean'],['ladder','Ladder (warm)']]],arr:['ARRIVE',ARR.map(x=>x.slice())],vce:['VOICING',[['close','Close'],['open','Open (wide)']]],ens:['ENSEMBLE',[['off','Off'],['light','Light'],['deep','Deep']]],tape:['TAPE',[['off','Off'],['on','Worn tape']]],
   uni:['STACK',[[1,'1 voice'],[3,'3 voices'],[5,'5 voices'],[7,'7 voices']]],
   srhy:['STAB STYLE',[['8','8ths'],['off','Offbeats'],['dot','Syncopated'],['16','16ths'],['4','Quarters'],['tres','Tresillo 3-3-2'],['clave','Clave'],['garage','Garage'],['skank','Skank (2 & 4)'],['gallop','Gallop'],['fpump','Pump (filter)'],['fwob','Wobble (filter)'],['fgate','Gate (filter)'],['fsweep','Sweep (filter)']]],
   lvar:['LOOP REPEATS',[[true,'Vary a little'],[false,'Stay the same']]],
@@ -379,7 +379,7 @@ function applyMotion(){const m=P.mot;P.pulse=m<.05?0:Math.min(.85,.3+m*.6);P.dri
 applyMotion();
 
 if(!P.lmove)P.lmove='smooth';
-if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.lsus)P.lsus='short';if(!P.astrum)P.astrum='off';if(!P.eco)P.eco='auto';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
+if(!P.preset)P.preset='custom';if(!P.shsec)P.shsec='sound';['mxA','mxL','mxR','mxC','mxS'].forEach(k=>{if(P[k]===undefined)P[k]=.5});if(!P.ftype)P.ftype='clean';if(!P.lsus)P.lsus='short';if(!P.astrum)P.astrum='off';if(!P.lcol)P.lcol='dreamy';if(!P.eco)P.eco='auto';if(!P.asnd)P.asnd='saw';if(P.alen===undefined)P.alen=0;if(!P.vce)P.vce='close';if(!P.ens)P.ens='off';if(!P.tape)P.tape='off';if(P.drv===undefined)P.drv=.2;
 if(P.lvar===undefined)P.lvar=true;if(!P.srhy)P.srhy='8';if(P.slen===undefined)P.slen=.35;if(!P.gridp)P.gridp='four';if(!P.fill)P.fill='off';if(!P.kit)P.kit='classic';if(P.dvol===undefined)P.dvol=.75;
 const UIR=[];if(!LEADS[P.lead])P.lead='bell';if(!P.lmode)P.lmode='pluck';if(!SOUNDS[P.snd])P.snd='saw';
 let loopOn={};const bsL=[0,0,0,0];
@@ -755,11 +755,14 @@ function counterGo(t,pi,arrive){
     A.c1.frequency.setTargetAtTime(mtof(c),td,tc);A.c2.frequency.setTargetAtTime(mtof(c),td,tc);
     A.ca.gain.setTargetAtTime(.95,td,.03);A.ca.gain.setTargetAtTime(.6,td+.15,.3);trPush(TR.lead,td,c,tc)}
 }
+let poolRoot=-1,poolTri=[];
 function setChord(pi){
   const ch=chordAt(pi),root=(P.key+ch[0])%12;
   const tones=[...new Set([0,...Q[ch[1]][1]].map(x=>x%12))].sort((a,b)=>a-b);
-  let b=55+root;if(b>61)b-=12;pool=[];
+  /* lead colour: Dreamy builds the strip and arps on the chord a fifth up (open, floating tensions); In chord uses exactly the chord on screen */
+  let b;if(P.lcol==='chord'){b=48+root;if(b<50)b+=12}else{b=55+root;if(b>61)b-=12}pool=[];
   for(let o=0;o<P.aoct;o++)tones.forEach(x=>pool.push(b+x+12*o));pool.push(b+12*P.aoct);
+  poolRoot=b%12;poolTri=Q[ch[1]][1].filter(x=>x>=3&&x<=8).map(x=>(poolRoot+x)%12);
   bassM=31+((root-7+12)%12);const iv=Q[ch[1]][1];
   if(on('pedal')&&pedalPc!=null){bassM=31+((pedalPc-7+12)%12)}
   bass3=iv.find(x=>x%12===3||x%12===4);if(bass3===undefined)bass3=5;bass3%=12;bass7=iv.find(x=>x%12===10||x%12===11);if(bass7===undefined)bass7=9;bass7%=12;if(on('pedal')&&pedalPc!=null){bass3=0;bass7=0}
@@ -1061,7 +1064,7 @@ const TIPS={arp:'Fast arpeggio of the chord notes. Shape, speed, length and soun
   stab:'Chops the chords in rhythm: plucks, or a pumping, wobbling, gating or sweeping filter. Pick the style with the Stab button below the pads.',soft:'Makes the chords quieter, so other layers come forward.',nochd:'Mutes the chords; everything else keeps playing.',
   low:'Only the low notes and the lowest chord note play.',vswell:'Two of the notes swell up and down.',vpulse:'The top notes pulse in rhythm.',stag:'The notes come in one by one after each change.',shim:'Adds a shimmer an octave above the top notes.',
   echo:'Echo throw: while you hold it, the chords go into a long dub echo that keeps ringing after you let go. Tap just before a chord change.',wash:'Wash: while you hold it, the chords go into a big reverb that hangs on after you let go.',pedal:'Pedal bass: the bass holds the note it has now while the chords keep moving above it. Switch off to let it follow again.',bloomb:'Each push alternates: the notes spread apart, then the next push pulls them together.',
-  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.','cy-astrum':'Plays a harp run over every new chord, alternating up and down. Used by the dreamy presets.','cy-lsus':'How long strip notes ring: Short, Long or Endless.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
+  'cy-arr':'How the notes travel to each new chord: all together, fanning out, one late and so on.',loct:'Moves the lead strip an octave up or down.','cy-lcol':'Which notes the lead strip and the arps use. Dreamy: open, floating extra notes on top of the chord (the classic Gliss sound). In chord: exactly the notes of the chord on screen.','cy-astrum':'Plays a harp run over every new chord, alternating up and down. Used by the dreamy presets.','cy-lsus':'How long strip notes ring: Short, Long or Endless.',qbtn:'How long each chord lasts: tap to switch between 1 bar and 2 bars. Two pads tapped together split it in half.',srbtn:'How Stab plays: plucked rhythms, or a filter that pumps, wobbles, gates or sweeps.',expbtn:'Record a WAV, save the loop as MIDI, or save and open the whole song as a .gliss file.',setbtn:'Pick a set of six chords, change the key, or build your own sets.',
   loop:'Tap to record a loop. While it plays, this opens the loop menu: Overdub, Undo, loop A and B, chain, edit and clear.',lbars:'How many bars the loop records.',rec:'Records what you hear as a WAV file.',mixbtn:'A level for each layer.',savebtn:'Save the whole song in one of four slots.',tl:'The loop bar. Tap it to edit the loop.'};
 Object.keys(CYC).forEach(k=>{if(!TIPS['cy-'+k])TIPS['cy-'+k]=CYC[k][0].charAt(0)+CYC[k][0].slice(1).toLowerCase()+': tap to choose.'});
 Object.assign(TIPS,{'cy-preset':'Sets the chord sound, arp sound, lead, ensemble, voicing, tape and drive in one go.','cy-quant':'When a tapped chord lands: next bar, every 2 bars, next beat or right away. The button under the pads switches between 1 and 2 bars.','cy-pre':'When the notes start gliding to the next chord.',
@@ -1238,11 +1241,15 @@ function recToggle(){
 function suggest(){if(cur>5)return [];const c=SETS[P.set].c,r0=c[cur][0],sc=[];
   for(let i=0;i<6;i++){if(i===cur)continue;const d=((c[i][0]-r0)%12+12)%12;let v={5:3,7:1.5,10:2,2:2,1:1.5,11:1.5,9:1.2,3:1.2,8:1,4:1,0:.8,6:.5}[d]||0;if(i===(cur+1)%6)v+=1.2;sc.push([v,i])}
   sc.sort((a,b)=>b[0]-a[0]);return [sc[0][1],sc[1][1]]}
+let lastGlow='';
 function paint(){const sgs=playing?suggest():[];
   document.querySelectorAll('.pad').forEach((p,i)=>{p.classList.toggle('cur',i===cur);p.classList.toggle('queued',i===queued);p.classList.toggle('queued2',i===queue2);p.classList.toggle('sug',sgs.includes(i));p.querySelector('b').textContent=chordName(i);p.classList.toggle('fup',flav(i)>0);p.classList.toggle('fdn',flav(i)<0)});
   $('#now').textContent=chordName(cur);$('#next').textContent=queued>=0?'next: '+chordName(queued):'';
   $('#setbtn').textContent=SETS[P.set].n+' ▾';{const nar=innerWidth<440;$('#lbars').textContent=loop&&loopSt!=='off'?(odub?'● '+(nar?'Dub':'Overdub'):(nar?'Dub':'Overdub')):P.lbars+' bars'}$('#lbars').classList.toggle('on',!!(loop&&odub));$('#loop').textContent=loopSt==='off'?'Loop':loopSt==='play'?(odub?'● ':'')+(chain?chain:'Loop '+'AB'[lslot])+(pendSlot>=0?' → '+'AB'[pendSlot]:'')+' ▾':(clearArm?'Sure?':'Cancel');$('#loop').classList.toggle('odub',!!(odub&&loopSt==='play'));$('#loop').classList.toggle('arm',!!clearArm);{const lab=$('#lab');lab.hidden=true;lab.innerHTML=chain?chain.split('').map((n,i)=>`<span class="${i===ci?'cur':''} ${pendSlot>=0&&i===(ci+1)%chain.length?'pend':''}">${n}</span>`).join(''):['A','B'].map((n,i)=>`<span class="${i===lslot?'cur':''} ${i===pendSlot?'pend':''}">${n}</span>`).join('')}$('#undo').hidden=true;$('#lbars').hidden=!!(loop&&loopSt!=='off');$('#loop').classList.toggle('on',loopSt!=='off');
-  $('#lead').style.setProperty('--n',strumLad().length);
+  {const l=strumLad(),root=poolRoot,tri=poolTri,
+    key=l.join()+'|'+root+'|'+tri.join();$('#lead').style.setProperty('--n',l.length);
+    /* chord-tone glow: the root of the chord that's playing glows warm, its 3rd and 5th softly, so you can see where to land */
+    if(key!==lastGlow){lastGlow=key;$('#lglow').innerHTML=l.map(m=>`<i class="${m%12===root?'r':tri.includes(m%12)?'t':''}"></i>`).join('')}}
   $('#beaton').textContent=on('beat')?'Beat is on':'Beat is off';$('#beaton').classList.toggle('on',on('beat'));
   const pl=playing&&!fading;$('#play').textContent=pl?'■ Stop':'▶ Play';$('#play').setAttribute('aria-label',pl?'Stop':'Play');$('#play').classList.toggle('on',!pl);$('#play').classList.toggle('stop',pl);
   $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='cap'||hook.st==='cap2'?'Hook…':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='cap'||hook.st==='cap2');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent='Stab '+o[1].split(' ')[0]+' ▾'}
@@ -1348,7 +1355,7 @@ function build(){
       else latched[k]=!latched[k]}punchChange(k);paint()};
     b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
   });
-  $('#bends').innerHTML='<div style="display:flex"><div class="bs" id="lead" style="--c:var(--text);flex:1;min-width:0"><span>LEAD: slide across to play</span></div></div>';
+  $('#bends').innerHTML='<div style="display:flex"><div class="bs" id="lead" style="--c:var(--text);flex:1;min-width:0"><div class="glow" id="lglow"></div><span>LEAD: slide across to play</span></div></div>';
   {const hb=$('#hook');let ht=0;hb._long=false;
     hb.addEventListener('pointerdown',()=>{hb._long=false;ht=setTimeout(()=>{hb._long=true;buzz(15);suggestHook()},550)});
     ['pointerup','pointercancel','pointerleave'].forEach(ev=>hb.addEventListener(ev,()=>clearTimeout(ht)))}
@@ -1357,7 +1364,7 @@ function build(){
   $('#loct').addEventListener('click',()=>{P.loct={0:12,12:-12,'-12':0}[P.loct||0];save();showOct();paint()});showOct();
   const DRUMK=['kit','fill'];$('#cyc').innerHTML=Object.keys(CYC).filter(k=>!DRUMK.includes(k)).map(k=>`<button id="cy-${k}"></button>`).join('');$('#cycD').innerHTML=DRUMK.map(k=>`<button id="cy-${k}"></button>`).join('');
   /* Shape options in three sections, one shown at a time */
-  const SEC={sound:['Sound',['preset','snd','lead','lmode','lsus','astrum','ftype','ens','tape','vce','uni','eco']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
+  const SEC={sound:['Sound',['preset','snd','lead','lmode','lcol','lsus','astrum','ftype','ens','tape','vce','uni','eco']],chords:['Chords',['arr','quant','pre','lmove','lin','srhy','lvar']],arp:['Arp & bass',['asnd','apat','arate','aoct','bpat','creg']]};
   const showSec=()=>{$('#shsec').innerHTML=Object.keys(SEC).map(k=>`<button class="chip ${P.shsec===k?'on':''}" data-s="${k}">${SEC[k][0]}</button>`).join('');
     Object.keys(CYC).forEach(k=>{const el=$('#cy-'+k);if(el&&!['kit','fill'].includes(k))el.hidden=!SEC[P.shsec][1].includes(k)})};
   $('#shsec').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.shsec=x.dataset.s;save();showSec()});
@@ -1372,16 +1379,20 @@ function build(){
       $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
       $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P[k]=typeof P[k]==='number'?+x.dataset.v:x.dataset.v==='true'?true:x.dataset.v==='false'?false:x.dataset.v;show();
         if(k==='preset'){const pr=PRESETS[P.preset];if(pr){applySnd(pr[1]);P.mxL=PLV[P.preset]??.5;applyMacros();if(pr[2]){Object.assign(P,pr[2]);if(pr[3]){Object.keys(latched).forEach(x=>delete latched[x]);pr[3].forEach(x=>latched[x]=true)}applyMotion();applyMacros();applyDetune();momentsApply()}setTimeout(()=>UIR.forEach(f=>f()),0);if(loop&&loopSt==='play')loop.snd=snapSnd()}}else if(SK.includes(k)){P.preset='custom';UIR.forEach(f=>f())}
-        if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(k==='eco'){applyFx();buildLines();say(ecoOn()?'Eco mode is on: lighter on the phone.':'Full quality.')}if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
+        if(k==='gridp')P.grid=mkGrid(P.gridp);if(k==='ens'||k==='tape'||k==='ftype')applyFx();if(k==='eco'){applyFx();buildLines();say(ecoOn()?'Eco mode is on: lighter on the phone.':'Full quality.')}if(loop&&loopSt==='play'&&SK.includes(k))loop.snd=snapSnd();if(k==='asnd')applyArpSnd();if(k==='vce'&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}if(k==='uni')buildLines();if(k==='snd')applySound();if(k==='lead')applyLead();if(k==='lcol'&&ctx){setChord(cur);paint()}if(['key','aoct','creg','lmove'].includes(k)&&playing){queued=cur;qAuto=false;qAt=-1;preStarted=false}
         save();paint();$('#pick').classList.remove('open')});
     });show();UIR.push(show)});
   $('#pick').addEventListener('click',e=>{if(e.target.id==='pick')$('#pick').classList.remove('open')});
   {const el=$('#lead');let last=-1;
     let rc=null;const go=e=>{const r=rc,x=Math.max(0,Math.min(.999,(e.clientX-r.left)/r.width)),l=strumLad(),sg=Math.floor(x*l.length);
-      ribLive=x;if(sg!==last){el.style.setProperty('--b',(sg+1)/l.length);strumNote(l[sg],gridT(),last>=0);last=sg}};
+      ribLive=x;if(sg!==last){el.style.setProperty('--b',(sg+1)/l.length);strumNote(l[sg],gridT(),last>=0);last=sg;holdVib()}};
+    /* keep your finger still on a note and a gentle vibrato fades in, like a singer */
+    let vt=0;const holdVib=()=>{clearTimeout(vt);vt=setTimeout(()=>{if(ribLive===null||!ctx)return;const t=ctx.currentTime;
+      if(P.lead==='bell'||P.lead==='harp'){if(A.svVib)A.svVib.gain.setTargetAtTime(16,t,.35)}
+      else{const d=LEADS[P.lead][1];if(d)A.L.vg.gain.setTargetAtTime(Math.max(d.vib,24),t,.35)}},380)};
     el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId)}catch(x){}if(!ctx)init();if(ctx.state!=='running')ctx.resume();rc=el.getBoundingClientRect();go(e)});
     el.addEventListener('pointermove',e=>{if(ribLive!==null)go(e)});
-    const up=()=>{ribLive=null;last=-1;el.style.setProperty('--b',0);if(ctx)strumEnd(ctx.currentTime)};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);}
+    const up=()=>{clearTimeout(vt);ribLive=null;last=-1;el.style.setProperty('--b',0);if(ctx)strumEnd(ctx.currentTime)};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);}
   $('#loop').addEventListener('click',()=>{if(loopSt==='play'){loopMenu();return}if(loopSt!=='off'){if(!clearArm){clearArm=setTimeout(()=>{clearArm=0;paint()},2500);paint();return}clearTimeout(clearArm);clearArm=0;clearLoop();lbank[lslot]=null;undoSt=[]}else{if(!playing)start();loopSt='arm'}paint()});
   {const lb=$('#lab');let ht=0;lb._long=false;
     lb.addEventListener('pointerdown',()=>{lb._long=false;ht=setTimeout(()=>{lb._long=true;buzz(15);openChain()},550)});
