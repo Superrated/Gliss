@@ -8,14 +8,15 @@ Gliss is one HTML file with no build step and nothing to install. It runs in any
 
 ## Run it
 
-- **Locally:** download `index.html` and open it in Chrome, Edge, Safari or Firefox.
-- **Online:** turn on GitHub Pages for this repository (Settings → Pages → deploy from the `main` branch, root folder). Gliss is then at `https://superrated.github.io/gliss/`.
+- **As an app (recommended):** open **https://superrated.github.io/Gliss/** on your phone or tablet.
+  - Android (Chrome): menu ⋮ → **Install app** (or "Add to Home screen").
+  - iPhone / iPad (Safari): Share → **Add to Home Screen**.
+  - It then opens full screen from its own icon, works offline, and updates itself when a new version is online.
+- **In a browser:** open the same link, or download `index.html` and open it in Chrome, Edge, Safari or Firefox.
+
+To publish it yourself: Settings → Pages → deploy from the `main` branch, root folder.
 
 On iPhone, switch the silent switch off, or web audio may stay muted.
-
-**Tip:** hold any button for a short explanation of what it does. Buttons that are filled are locked on, outlined ones are played by the loop, and a white ring means you are holding it.
-
-When you open Gliss, **Start a jam** offers eight vibes (Night drive, Lo-fi, Anthem, Neo-soul, Synthwave, Floating, Lounge keys, Deep dub) that set the chords, sound, beat and tempo in one tap. You can open it again from Help.
 
 ## How to play
 

@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Gliss</title>
+<meta name="theme-color" content="#0e1020">
+<meta name="description" content="Gliss: a live-playable synth for gliding chords, by Superrated.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Gliss">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -200,7 +205,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>beta 0.861</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>beta 0.862</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -1554,6 +1559,8 @@ function draw(){
   arpV.forEach(a=>{if(a.t<=now){cx.globalAlpha=.85;cx.fillRect(X(a.t)-1.5,Y(a.m)-1.5,3,3)}});cx.globalAlpha=1;
 }
 build();draw();
+/* installed as an app (from GitHub Pages): work offline and pick up new versions by itself */
+if('serviceWorker' in navigator&&/github\.io$|localhost/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 /* ---------- first-time tour: a few short cards that point at the parts of the screen ---------- */
 const TOUR=[
   ['Welcome to Gliss','A synth for gliding chords. Tap a chord pad to start. Tap another pad and all the notes glide to it on the next bar.','#pads','jam'],
