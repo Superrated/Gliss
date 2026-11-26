@@ -75,7 +75,8 @@ header{display:flex;align-items:center;gap:10px;flex:none}
 #play{min-width:96px;height:42px;font-size:15px;font-weight:800;border-radius:21px;flex:none;letter-spacing:.02em}
 #play.on{box-shadow:0 0 18px rgba(255,179,71,.5)}
 #play.stop{background:linear-gradient(180deg,#2a2f55,#1d2140);border-color:#4a5190;color:var(--text)}
-.scope{position:relative;flex:1.2 1 0;min-height:44px;max-height:170px;border-radius:16px;background:linear-gradient(180deg,#1c2040,#12142a);border:1px solid #232849;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.scoperow{display:flex;gap:6px;flex:1.2 1 0;min-height:44px;max-height:170px}.hs{display:flex;gap:6px;flex:none}.hs .chip{height:auto!important;width:66px;border-radius:14px;font-size:13px}
+.scope{position:relative;flex:1 1 auto;min-width:0;border-radius:16px;background:linear-gradient(180deg,#1c2040,#12142a);border:1px solid #232849;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .scope canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .now{position:absolute;left:14px;top:9px;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.01em;line-height:1;text-shadow:0 1px 8px var(--ink)}
 .next{position:absolute;right:12px;top:11px;color:var(--hot);font-weight:600;text-shadow:0 1px 8px var(--ink)}
@@ -201,7 +202,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 @media (min-width:900px) and (max-height:820px){.pads{min-height:110px}.xyrow{height:60px}.bs{height:48px}.prow .pb{height:40px}.cyc button{height:44px}.scope{min-height:40px}}
 @media (max-height:640px){.cyc{gap:4px}#fadersS{row-gap:0}.cyc button{height:29px}#pg-shape .chip{height:28px}.fd{height:22px}#fadersS .fd input{height:16px}#fadersS input::-webkit-slider-thumb{width:18px;height:18px;margin-top:-4px}#fadersS input::-moz-range-thumb{width:18px;height:18px}.app{gap:5px;padding-top:6px}.pg{gap:5px}.chip{height:30px}.prow .pb{height:28px;min-height:28px}.bs{height:42px}#tl{height:24px}#loop,#lbars,#setbtn,#undo,#lab{height:24px!important}
   .sets .chip{height:26px}.xyrow{height:44px}.scope{min-height:26px}.pads{min-height:66px}.now{font-size:18px;top:5px}.punch{gap:4px}.logo{font-size:18px}}
-@media (max-width:599px){.scope{flex:.5 1 0;max-height:64px}.pads{flex:2.4 1 0}}
+@media (max-width:599px){.scoperow{flex:.5 1 0;max-height:64px}.pads{flex:2.4 1 0}}
 @media (max-width:440px){#tl{min-width:64px}#looprow{gap:4px}#looprow .chip{padding:0 7px!important;font-size:11px}#setbtn{max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#arrbtn{min-width:64px!important}#lift,#srbtn,#loct{padding:0 7px!important;font-size:11px}}
 @media (max-width:430px){header{gap:4px}.tabs{gap:2px}.tabs .chip{padding:0 8px;font-size:11px;height:34px}#play{min-width:84px;padding:0 10px;font-size:14px}#rec{width:34px;height:34px;padding:0;font-size:0;flex:none}#rec::before{margin:0}.logo{font-size:18px}.logo small:not(.by){display:none}}
 @media (prefers-reduced-motion:reduce){.pad{transition:none}#rec.on{animation:none}}
@@ -210,18 +211,18 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.886</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.887</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
   </header>
   <div class="pages">
     <section class="pg" id="pg-jam">
-      <div class="scope"><canvas id="cv"></canvas><div class="now" id="now"></div><div class="next" id="next"></div></div>
+      <div class="scoperow"><div class="scope"><canvas id="cv"></canvas><div class="now" id="now"></div><div class="next" id="next"></div></div><div class="hs"><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button><button class="chip" id="strum" aria-label="Strum: a fast run up the chord; hold for a run down">Strum</button></div></div>
       <div class="row" id="looprow"><button class="chip" id="setbtn" style="height:32px" aria-label="Change chord set"></button><canvas id="tl"></canvas><button class="chip" id="lbars" style="height:32px" aria-label="Loop length"></button><button class="chip" id="lab" style="height:32px;padding:0 9px" aria-label="Switch between loop A and loop B; hold for a chain like A A B A" hidden></button><button class="chip" id="undo" style="height:32px;padding:0 10px" aria-label="Undo last loop change" hidden>↶</button><button class="chip" id="loop" style="height:32px">Loop</button></div>
       <div class="bends" id="bends"></div>
       <div class="pads" id="pads"></div>
-      <div class="row jrow"><button class="chip" id="arrbtn" hidden></button><button class="chip" id="loct" aria-label="Lead octave"></button><button class="chip" id="lift" style="height:30px;flex:none;padding:0 10px" aria-label="Key lift: tap to go up a step at the next bar, hold to go down">Lift ↑</button><button class="chip" id="qbtn" aria-label="How long each chord lasts: tap to switch between 1 and 2 bars"></button><button class="chip" id="hook" aria-label="Hook: keep two bars of lead and repeat them">Hook</button><button class="chip" id="strum" aria-label="Strum: a fast run up the chord; hold for a run down">Strum</button><button class="chip" id="srbtn" style="height:30px;flex:none;padding:0 10px" aria-label="Stab rhythm"></button></div>
+      <div class="row jrow"><button class="chip" id="arrbtn" hidden></button><button class="chip" id="loct" aria-label="Lead octave"></button><button class="chip" id="lift" style="height:30px;flex:none;padding:0 10px" aria-label="Key lift: tap to go up a step at the next bar, hold to go down">Lift ↑</button><button class="chip" id="qbtn" aria-label="How long each chord lasts: tap to switch between 1 and 2 bars"></button><button class="chip" id="srbtn" style="height:30px;flex:none;padding:0 10px" aria-label="Stab rhythm"></button></div>
       <div class="punch" id="punchJ"></div>
       <div class="xyrow"><canvas id="xyp" aria-label="Filter pad: left-right cutoff, up-down resonance"></canvas></div>
     </section>
@@ -1244,7 +1245,7 @@ function paint(){const sgs=playing?suggest():[];
   $('#lead').style.setProperty('--n',strumLad().length);
   $('#beaton').textContent=on('beat')?'Beat is on':'Beat is off';$('#beaton').classList.toggle('on',on('beat'));
   const pl=playing&&!fading;$('#play').textContent=pl?'■ Stop':'▶ Play';$('#play').setAttribute('aria-label',pl?'Stop':'Play');$('#play').classList.toggle('on',!pl);$('#play').classList.toggle('stop',pl);
-  $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='cap'||hook.st==='cap2'?'Hook…':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='cap'||hook.st==='cap2');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent=(innerWidth<440?'':'Stab ')+o[1].split(' ')[0]+' ▾'}
+  $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='cap'||hook.st==='cap2'?'Hook…':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='cap'||hook.st==='cap2');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent='Stab '+o[1].split(' ')[0]+' ▾'}
   document.querySelectorAll('.pb').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',!!latched[k]||!!held[k]||!!shots[k]);b.classList.toggle('lock',!!latched[k]);b.classList.toggle('lp',!!loopOn[k]&&!latched[k]&&!held[k]);b.classList.toggle('hold',!!held[k])});
   {const bb=document.querySelector('.pb[data-k=beat]');if(bb)bb.textContent=on('beat')&&P.blite?'LIGHT':'BEAT'}
   document.querySelectorAll('.hvt button').forEach(t=>{const g=+t.dataset.t;t.classList.toggle('lit',PUNCH.some(x=>x[3]===g&&on(x[0])))});
@@ -1352,7 +1353,7 @@ function build(){
     hb.addEventListener('pointerdown',()=>{hb._long=false;ht=setTimeout(()=>{hb._long=true;buzz(15);suggestHook()},550)});
     ['pointerup','pointercancel','pointerleave'].forEach(ev=>hb.addEventListener(ev,()=>clearTimeout(ht)))}
   $('#hook').addEventListener('click',()=>{if($('#hook')._long){$('#hook')._long=false;return}hookTap()});
-  const showOct=()=>{const o=P.loct||0;$('#loct').textContent=(innerWidth<440?'Oct ':'Lead ')+(o>0?'+1':o<0?'−1':'0');$('#loct').classList.toggle('on',!!o)};
+  const showOct=()=>{const o=P.loct||0;$('#loct').textContent='Lead '+(o>0?'+1':o<0?'−1':'0');$('#loct').classList.toggle('on',!!o)};
   $('#loct').addEventListener('click',()=>{P.loct={0:12,12:-12,'-12':0}[P.loct||0];save();showOct();paint()});showOct();
   const DRUMK=['kit','fill'];$('#cyc').innerHTML=Object.keys(CYC).filter(k=>!DRUMK.includes(k)).map(k=>`<button id="cy-${k}"></button>`).join('');$('#cycD').innerHTML=DRUMK.map(k=>`<button id="cy-${k}"></button>`).join('');
   /* Shape options in three sections, one shown at a time */
