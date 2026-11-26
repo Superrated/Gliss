@@ -25,11 +25,11 @@ When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthe
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
-- **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change. Hold Hook for a suggested hook. Tap again to let it go.
+- **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change, with a different ending every second time. Hold Hook for a suggested hook. Tap again to let it go.
 - **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held.
   - Add: Arp, Counter, Reese, Beat, Sparkle
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords
-  - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Breathe (each push spreads the notes apart or pulls them together)
+  - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Pedal (the bass holds its note while the chords move), Breathe (each push spreads the notes apart or pulls them together)
 - **Arrive:** how the notes travel to each new chord. **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab rhythm.
 - **Filter pad:** left–right sets the cutoff, up–down the resonance.
 - **Play / Stop:** Stop fades out gently. Hold it to switch every locked button off at once.
@@ -41,6 +41,7 @@ When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthe
   - **Undo**, **Record / go to loop B**, **Chain** (A A B A, A B A B and more, played by itself), **Edit loop**, **Save as MIDI**, **Clear loop** (tap twice).
 - **Edit loop** (or tap the loop bar): each block is half a bar. Pick its chord, ▼ darker or ▲ brighter variation, Keep last, or Break (the end of the block goes quiet). Below that, switch layers on or off per block, remove the lead from a block, Clear lead, Clear moves or Double loop.
 - Each loop keeps its own sound, so B can sound different from A.
+- With **Loop repeats** set to vary a little (Shape › Chords), loops of 2 bars or more sometimes get a chord in their last half bar that pulls back to the start (a turnaround).
 
 **Shape page**
 - Scenes (Mirage, Lift, Full, Wild).
