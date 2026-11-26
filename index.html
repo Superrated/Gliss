@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.871</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.872</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -1611,14 +1611,15 @@ build();draw();
 if('serviceWorker' in navigator&&/github\.io$|localhost/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 /* ---------- first-time tour: a few short cards that point at the parts of the screen ---------- */
 const TOUR=[
-  ['Welcome to Gliss','A synth for gliding chords. Tap a chord pad to start. Tap another pad and all the notes glide to it on the next bar.','#pads','jam'],
-  ['Brighter, darker, passing','Swipe a pad up for a brighter version of its chord, down for a darker one. Hold a pad for a passing chord that jumps back when you let go.','#pads','jam'],
-  ['Play a lead','Slide across this strip to play notes that always fit the chord. The button next to Arrive moves it an octave.','#lead','jam'],
-  ['Add, hold, vary','Tap a button to switch it on and leave it on; hold it to use it only while you hold. Add brings in layers, Hold makes moments, Vary changes how the chord plays.','#punchJ','jam'],
-  ['Filter pad','Drag left or right to make everything darker or brighter, and up for a more resonant, squelchy sound. It stays where you leave it.','#xyp','jam'],
-  ['Shape the sound','The Shape page has the sound presets (try Mirage, Lift, Full and Wild), sounds and effects in three sections, plus Save, Mixer and Export at the bottom.','#shsec','shape'],
-  ['Drums','The Drums page has the beat: kit, fills, a step grid you tap in, tempo and swing.','#beaton','drums'],
-  ['Loop your chords','Tap Loop: it records from the next bar for the number of bars next to it, then repeats. Tap a pad while it plays to swap that chord. Loop ▾ opens the loop menu; tapping the loop bar opens the editor. Tip: hold any button to read what it does. This tour is under Help on the Shape page.','#looprow','jam']];
+  ['Welcome to Gliss','Tap a chord pad to start. Tap another pad and all the notes glide to it: the pad fills up while it waits and flashes when the chord lands.','#pads','jam'],
+  ['Brighter, darker, two at once','Swipe a pad up for a brighter version of its chord, down for a darker one. Tap two pads quickly for two chords in one bar (the second is marked ½).','#pads','jam'],
+  ['Under the pads','Lead moves the lead strip an octave. Lift moves everything up a step (hold for down). 1 bar / 2 bars sets how long each chord lasts. Stab picks how the Stab button chops the chords.','.jrow','jam'],
+  ['Play a lead','Slide across this strip to play notes that always fit the chord. Hook keeps two bars of what you play and repeats it; hold Hook for a suggested one.','#lead','jam'],
+  ['Add, hold, vary','Tap a button to lock it on, hold it to use it only while held. Beat cycles full, light and off. Hold Echo or Wash to throw the chords into a long echo or reverb. The small HOLD / VARY tabs switch the second row.','#punchJ','jam'],
+  ['Filter pad','Drag left or right to make everything darker or brighter, and up for a more resonant sound. It stays where you leave it.','#xyp','jam'],
+  ['Shape the sound','Sound presets set a whole sound in one tap, and you can save your own. Sound, Chords and Arp & bass hold the details. At the bottom: Save, Mixer and Export (WAV, MIDI, song file).','#shsec','shape'],
+  ['Drums','Beat on or off, kit, fills, a step grid you tap in, tempo, swing and pump.','#beaton','drums'],
+  ['Loop your chords','Tap Loop: it records from the next bar, then repeats. Tap a pad while it plays to swap that chord. Loop ▾ opens Overdub, Undo, loop B and Chain; tapping the loop bar opens the editor. Hold any button to read what it does. This tour is under Help on the Shape page.','#looprow','jam']];
 function tour(i){
   const hole=$('#tourhole'),card=$('#tourcard');if(i>=TOUR.length||i<0){hole.hidden=card.hidden=true;try{localStorage.setItem('gliss-tour','1')}catch(e){};return}
   const [h,txt,sel,pg]=TOUR[i];const tb=document.querySelector(`.tabs [data-pg="${pg}"]`);if(tb&&getComputedStyle(document.querySelector('.tabs')).display!=='none')tb.click();
