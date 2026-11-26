@@ -160,7 +160,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 .slot b{font-family:var(--display);font-size:15px}.slot small{display:block;color:var(--mute);font-size:10.5px;margin-top:2px}
 .slot .chip{height:36px}.slot.empty b{color:var(--mute)}
 #tourhole{position:fixed;z-index:20;border:2px solid var(--hot);border-radius:16px;box-shadow:0 0 0 9999px rgba(8,9,20,.72);pointer-events:none;transition:all .25s}
-#tourcard{position:fixed;left:50%;transform:translateX(-50%);z-index:21;width:min(420px,calc(100% - 28px));background:var(--panel);border:1px solid var(--rail);border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+#tourcard{position:fixed;max-height:calc(100% - 28px);overflow-y:auto;left:50%;transform:translateX(-50%);z-index:21;width:min(420px,calc(100% - 28px));background:var(--panel);border:1px solid var(--rail);border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 #tourcard h3{font-family:var(--display);font-size:19px;margin:0 0 6px}#tourcard p{margin:0;color:#c9cdf0;font-size:12px;line-height:1.5}
 #tourcard .tnav{display:flex;align-items:center;gap:8px;margin-top:12px}#tourcard .tnav i{flex:1;color:var(--mute);font-style:normal;font-size:11px}
 #tourcard .by{color:var(--mute);font-size:10px;margin-top:8px}
@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.869</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.870</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -1615,16 +1615,18 @@ const TOUR=[
   ['Play a lead','Slide across this strip to play notes that always fit the chord. The button next to Arrive moves it an octave.','#lead','jam'],
   ['Add, hold, vary','Tap a button to switch it on and leave it on; hold it to use it only while you hold. Add brings in layers, Hold makes moments, Vary changes how the chord plays.','#punchJ','jam'],
   ['Filter pad','Drag left or right to make everything darker or brighter, and up for a more resonant, squelchy sound. It stays where you leave it.','#xyp','jam'],
-  ['Shape the sound','The Shape page has the sound presets (try Mirage, Lift, Full and Wild), sounds, effects, Save, Mixer and Export.','#pg-shape','shape'],
-  ['Drums','The Drums page has the beat: kit, fills, a step grid you tap in, tempo and swing.','#pg-drums','drums'],
-  ['Loop your chords','Tap Loop: recording starts on the next bar and lasts the number of bars shown next to it (tap that to change it). Then it repeats. While it plays, tap a pad to swap the chord in that spot. The Loop ▾ button opens the loop menu (Overdub, Undo, loop B, chain, edit, clear); tap the loop bar to edit it. Hold any button for a short explanation. Buttons: filled = locked on, outlined = the loop plays it, white ring = you are holding it. Start a jam (in Help) picks a whole vibe in one tap. You can see this tour again under Help & tour on the Shape page.','#looprow','jam']];
+  ['Shape the sound','The Shape page has the sound presets (try Mirage, Lift, Full and Wild), sounds and effects in three sections, plus Save, Mixer and Export at the bottom.','#shsec','shape'],
+  ['Drums','The Drums page has the beat: kit, fills, a step grid you tap in, tempo and swing.','#beaton','drums'],
+  ['Loop your chords','Tap Loop: it records from the next bar for the number of bars next to it, then repeats. Tap a pad while it plays to swap that chord. Loop ▾ opens the loop menu; tapping the loop bar opens the editor. Tip: hold any button to read what it does. This tour is under Help on the Shape page.','#looprow','jam']];
 function tour(i){
   const hole=$('#tourhole'),card=$('#tourcard');if(i>=TOUR.length||i<0){hole.hidden=card.hidden=true;try{localStorage.setItem('gliss-tour','1')}catch(e){};return}
   const [h,txt,sel,pg]=TOUR[i];const tb=document.querySelector(`.tabs [data-pg="${pg}"]`);if(tb&&getComputedStyle(document.querySelector('.tabs')).display!=='none')tb.click();
   const el=$(sel);requestAnimationFrame(()=>{const r=el.getBoundingClientRect();hole.hidden=false;Object.assign(hole.style,{left:r.left-5+'px',top:r.top-5+'px',width:r.width+10+'px',height:r.height+10+'px'});
     card.hidden=false;const below=r.top+r.height/2<innerHeight/2;card.style.top=below?Math.min(innerHeight-190,r.bottom+14)+'px':'';card.style.bottom=below?'':Math.max(10,innerHeight-r.top+14)+'px';
     card.innerHTML=`<h3>${h}</h3><p>${txt}</p><div class="tnav"><i>${i+1} of ${TOUR.length}</i><button class="chip" id="tskip">${i===TOUR.length-1?'Close':'Skip'}</button>`+(i<TOUR.length-1?'<button class="chip on" id="tnext">Next</button>':'')+'</div>'+(i===0?'<div class="by">Gliss by Superrated</div>':'');
-    $('#tskip').onclick=()=>{tour(99);document.querySelector('.tabs [data-pg="jam"]').click()};if($('#tnext'))$('#tnext').onclick=()=>tour(i+1)})}
+    $('#tskip').onclick=()=>{tour(99);document.querySelector('.tabs [data-pg="jam"]').click()};if($('#tnext'))$('#tnext').onclick=()=>tour(i+1);
+    /* keep the card on screen: if it would stick out (for example when a whole page is highlighted), pin it to the bottom */
+    const cr=card.getBoundingClientRect();if(cr.top<8||cr.bottom>innerHeight-8||r.height>innerHeight*.5){card.style.top='';card.style.bottom='14px'}})}
 window.startTour=()=>{$('#sheet').classList.remove('open');tour(0)};
 if(matchMedia('(min-width:900px)').matches)document.querySelector('.tabs [data-pg="shape"]').click();
 const VIBES=[['Night drive','Dark minor chords, warm Juno, steady beat',{set:2,key:9,bpm:100,kit:'808',swing:.1},'juno',true],
