@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Gliss by Superrated. Required Notice: Copyright (c) 2026 Superrated (https://github.com/Superrated/Gliss). Licensed under the PolyForm Noncommercial License 1.0.0: https://polyformproject.org/licenses/noncommercial/1.0.0 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -208,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.865</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.866</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -454,7 +455,7 @@ function init(){
   const osc=(type,f)=>{const o=ctx.createOscillator();o.type=type;o.frequency.value=f;o.start();return o};
   const lp=(f,q)=>{const b=ctx.createBiquadFilter();b.type='lowpass';b.frequency.value=f;b.Q.value=q;return b};
   const pan=v=>{const p=ctx.createStereoPanner();p.pan.value=v;return p};
-  A.master=g(1);A.shape=ctx.createWaveShaper();const cv=new Float32Array(1024);
+  A.master=g(1);A.shape=ctx.createWaveShaper();A.shape.oversample='4x';const cv=new Float32Array(1024);
   for(let i=0;i<1024;i++){const x=i/511.5-1;cv[i]=Math.tanh(1.5*x)/Math.tanh(1.5)}A.shape.curve=cv;
   A.comp=ctx.createDynamicsCompressor();A.comp.threshold.value=-16;A.comp.ratio.value=2.5;A.comp.attack.value=.015;A.comp.release.value=.2;A.comp.knee.value=6;
   A.lim=ctx.createDynamicsCompressor();A.lim.threshold.value=-1.5;A.lim.ratio.value=20;A.lim.attack.value=.001;A.lim.release.value=.08;A.lim.knee.value=0;
@@ -484,7 +485,9 @@ function init(){
     /* a few early reflections, different left and right */
     for(let e=0;e<9;e++){const at=pre+Math.floor(sr*(.004+e*.009+Math.random()*.006));if(at<len)d[at]+=(Math.random()<.5?-1:1)*(.5-e*.045)}
     /* the tail: noise that gets darker as it fades */
-    for(let i=pre;i<len;i++){const k=(i-pre)/(len-pre);y+=(Math.random()*2-1-y)*(.55-.47*k);d[i]+=y*Math.exp(-6.2*k)*Math.min(1,(i-pre)/(sr*.03))*.9}}
+    let lo=0,lo2=0;for(let i=pre;i<len;i++){const k=(i-pre)/(len-pre),sec=(i-pre)/sr,n=Math.random()*2-1;lo+=(n-lo)*.06;lo2+=(lo-lo2)*.06;
+      const low=lo2*5.5,high=n-lo;/* lows ring for about 3 s, highs for about 1 s, so the tail gets darker and smoother */
+      d[i]+=(low*Math.exp(-2.3*sec)+high*.55*Math.exp(-6*sec)+(n*.25)*Math.exp(-14*sec))*Math.min(1,(i-pre)/(sr*.02))*.75*(1-k*.15)}}
   conv.buffer=ir;const rHP=ctx.createBiquadFilter();rHP.type='highpass';rHP.frequency.value=280;const rLP=ctx.createBiquadFilter();rLP.type='lowpass';rLP.frequency.value=7500;
   A.sOut.connect(A.rIn);A.rIn.connect(rHP);rHP.connect(conv);A.rHP=rHP;conv.connect(rLP);rLP.connect(A.master);
   /* chord lines: gate -> chorus -> pump */
@@ -493,7 +496,7 @@ function init(){
   const air=ctx.createBiquadFilter();air.type='highshelf';air.frequency.value=5500;air.gain.value=1.2;
   A.lineBus.connect(hp);hp.connect(air);air.connect(A.gate);
   /* per line: your finger bend, the random drift, and a vibrato that only opens during drift */
-  A.lowBus=g(1);A.lowBus.connect(A.gate);
+  A.lowBus=g(1);A.lowDk=g(1);A.lowBus.connect(A.lowDk);A.lowDk.connect(A.gate);
   A.lb=[];A.ld=[];A.lvg=[];A.lfk=[];A.lbl=[];
   for(let i=0;i<NL;i++){A.lfk.push((()=>{const c=ctx.createConstantSource();c.offset.value=0;c.start();return c})());A.lbl.push((()=>{const c=ctx.createConstantSource();c.offset.value=0;c.start();return c})());
     const cs=()=>{const c=ctx.createConstantSource();c.offset.value=0;c.start();return c};
@@ -550,7 +553,7 @@ function buildLines(){
       const o=ctx.createOscillator();if(P.pw&&keyWave(P.pw))o.setPeriodicWave(keyWave(P.pw));else o.type=P.wave;o.frequency.value=440;sum.connect(o.detune);
       const bg=ctx.createGain();bg.gain.value=0;A.lbl[i].connect(bg);bg.connect(o.detune);
       const og=ctx.createGain();og.gain.value=(pos===0?1:.78)*(L.low?.6:.45)/Math.sqrt(N);
-      const p=ctx.createStereoPanner();p.pan.value=L.low?pos*.25:Math.max(-1,Math.min(1,pos*.75+(i-1.5)*.16));
+      const p=ctx.createStereoPanner();p.pan.value=L.low?pos*.2:Math.max(-1,Math.min(1,pos*.95+(i-1.5)*.14));
       o.connect(og);og.connect(p);p.connect(vg);o.start(t+Math.random()*.03);
       oscs.push({o,pos,bg});all.push(o,og,p,bg);
     }
@@ -999,8 +1002,9 @@ function schedStep(s,t,dur){
     if(G.h[b]||(F==='var'&&vr<.25&&!G.h[b]))noiseHit(t,'highpass',KIT().hf,(G.h[b]?(b%4===2?.3:.17):.09)*KIT().hv*(.8+Math.random()*.3),KIT().hl*(.9+Math.random()*.25));}
     if(!fillBar&&G.c[b]){noiseHit(t,'bandpass',1300,.45,.02);noiseHit(t+.012,'bandpass',1300,.45,.02);noiseHit(t+.024,'bandpass',1300,.55,.13)}
   }
-  if(k&&P.pump>0){A.pumpG.gain.setTargetAtTime(1-P.pump*.9,t,.004);A.pumpG.gain.setTargetAtTime(1,t+.035,.09);
-    A.bp.gain.setTargetAtTime(1-P.pump*.7,t,.004);A.bp.gain.setTargetAtTime(1,t+.035,.08)}
+  if(k&&P.pump>0){A.pumpG.gain.setTargetAtTime(1-P.pump*.9,t,.004);A.pumpG.gain.setTargetAtTime(1,t+.035,.09)}
+  if(k){const dr=Math.min(.5,1-P.pump*.7);A.bp.gain.setTargetAtTime(dr,t,.003);A.bp.gain.setTargetAtTime(1,t+.03,.07);
+    A.lowDk.gain.setTargetAtTime(.45,t,.003);A.lowDk.gain.setTargetAtTime(1,t+.03,.07)}
 }
 function tick(){
   if(!playing)return;
@@ -1388,7 +1392,7 @@ function build(){
     $('#pbox').innerHTML='<h2>Arrive<button class="chip" id="pclose">Close</button></h2><div class="opt"><div>How the notes travel to each new chord</div></div><div class="seg">'+ARR.map(([v,n])=>`<button data-v="${v}" class="${P.arr===v?'on':''}">${n}</button>`).join('')+'</div>';
     $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
     $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.arr=x.dataset.v;save();paint();$('#pick').classList.remove('open')})});
-  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="qstart">Start a jam…</button><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Hold any button to read what it does. Buttons: quick tap locks on or off, hold to play only while held. Filled = locked on, outlined = the loop plays it, white ring = you are holding it. Chord pads: tap and the notes glide to the chord on the next bar (a tap just after the bar still counts). Tap a second pad while one waits for two chords in a bar (the second marked ½). Swipe up for the brighter version, down for the darker one. Chord set (left of the loop bar): sets, key, and ✎ My set 1–4 to build your own. Lead strip: slide to play notes that always fit; they snap gently to the beat and the chords make room for them. Hook keeps two bars of lead and repeats them, ending differently every second time; hold Hook for a suggested one. Pedal (Vary row) holds the bass note while the chords move. With Loop repeats on Vary a little, the last half bar of a loop of 2 bars or more sometimes gets a chord that pulls back to the start. The 1 bar / 2 bars button sets how long each chord lasts (two pads split it in half). Lead moves the strip an octave, Lift ↑ moves the jam up a step at the next bar (hold for down), Stab sets the stab rhythm. Loop: tap to record 2–16 bars (bars chip next to it). While it plays, tap a pad to swap a chord. Loop A ▾ opens the loop menu: Overdub, Undo, loop B, Chain (A A B A…), Edit loop, Save as MIDI, Clear. Tap the loop bar to edit: chords per half bar, darker or brighter versions, breaks, layers per block, clear lead or moves, double the loop. Shape: Sound / Chords / Arp & bass options (Sound preset sets everything at once, including Mirage, Lift, Full and Wild; Arrive is under Chords), faders, Save (four slots), Mixer, Export (WAV, MIDI, .gliss song file) and this help. Hold and Vary share one row on Jam: tap the small tabs to switch. A dot on a button means holding it does something extra. Drums: beat, kit, fills, step grid, tempo, swing and pump. Stop fades out; hold Play/Stop to switch every locked button off. Rec records a WAV. Start a jam picks a whole vibe in one tap.</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
+  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="qstart">Start a jam…</button><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Hold any button to read what it does. Buttons: quick tap locks on or off, hold to play only while held. Filled = locked on, outlined = the loop plays it, white ring = you are holding it. Chord pads: tap and the notes glide to the chord on the next bar (a tap just after the bar still counts). Tap a second pad while one waits for two chords in a bar (the second marked ½). Swipe up for the brighter version, down for the darker one. Chord set (left of the loop bar): sets, key, and ✎ My set 1–4 to build your own. Lead strip: slide to play notes that always fit; they snap gently to the beat and the chords make room for them. Hook keeps two bars of lead and repeats them, ending differently every second time; hold Hook for a suggested one. Pedal (Vary row) holds the bass note while the chords move. With Loop repeats on Vary a little, the last half bar of a loop of 2 bars or more sometimes gets a chord that pulls back to the start. The 1 bar / 2 bars button sets how long each chord lasts (two pads split it in half). Lead moves the strip an octave, Lift ↑ moves the jam up a step at the next bar (hold for down), Stab sets the stab rhythm. Loop: tap to record 2–16 bars (bars chip next to it). While it plays, tap a pad to swap a chord. Loop A ▾ opens the loop menu: Overdub, Undo, loop B, Chain (A A B A…), Edit loop, Save as MIDI, Clear. Tap the loop bar to edit: chords per half bar, darker or brighter versions, breaks, layers per block, clear lead or moves, double the loop. Shape: Sound / Chords / Arp & bass options (Sound preset sets everything at once, including Mirage, Lift, Full and Wild; Arrive is under Chords), faders, Save (four slots), Mixer, Export (WAV, MIDI, .gliss song file) and this help. Hold and Vary share one row on Jam: tap the small tabs to switch. A dot on a button means holding it does something extra. Drums: beat, kit, fills, step grid, tempo, swing and pump. Stop fades out; hold Play/Stop to switch every locked button off. Rec records a WAV. Start a jam picks a whole vibe in one tap.</div></div><div class="opt"><div style="color:var(--mute);font-size:11px">Gliss © 2026 Superrated · free for noncommercial use under the PolyForm Noncommercial License 1.0.0 (polyformproject.org/licenses/noncommercial/1.0.0).</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
     ?`<div class="opt"><label for="t-${k}"><span>${lab}</span><output id="to-${k}"></output></label><input type="range" id="t-${k}" min="${a}" max="${b2}" step="${c}" value="${P[k]}"></div>`
     :`<div class="opt"><div>${lab}</div><div class="seg" data-k="${k}">${a.map(([v,n])=>`<button data-v="${v}">${n}</button>`).join('')}</div></div>`).join('');
   TUNE.forEach(([lab,k,type,a,b2])=>{

@@ -73,4 +73,4 @@ Pure Web Audio API and plain JavaScript in a single file, with no libraries. Set
 
 ## License
 
-PolyForm Noncommercial License 1.0.0: free to use, change and share for noncommercial purposes. See [LICENSE.md](LICENSE.md).
+Copyright © 2026 Superrated. Gliss is licensed under the [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0): free to use, change and share for noncommercial purposes. See [LICENSE.md](LICENSE.md). Music you make with Gliss is yours.
