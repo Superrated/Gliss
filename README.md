@@ -20,17 +20,17 @@ When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthe
 ## How to play
 
 **Jam page**
-- **Chord pads:** tap a pad and the notes glide to it on the next bar. A tap just after the bar still counts as on time. Hold a pad for a passing chord that jumps back when you let go.
+- **Chord pads:** tap a pad and the notes glide to it on the next bar. A tap just after the bar still counts as on time.
 - **Two chords in a bar:** tap a second pad while the first is still waiting. The first lands on the bar, the second (marked ½) half a bar later. Tap a waiting pad again to take it back.
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
 - **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change, with a different ending every second time. Hold Hook for a suggested hook. Tap again to let it go.
-- **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held.
+- **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held. Hold and Vary share one row: tap the small HOLD / VARY tabs to switch (a tab lights up when something on it is on).
   - Add: Arp, Counter, Reese, Beat, Sparkle
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords
   - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Pedal (the bass holds its note while the chords move), Breathe (each push spreads the notes apart or pulls them together)
-- **Arrive:** how the notes travel to each new chord. **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab rhythm.
+- **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab style: plucked rhythms or a filter that pumps, wobbles, gates or sweeps. A small dot on a button means holding it does something extra.
 - **Filter pad:** left–right sets the cutoff, up–down the resonance.
 - **Play / Stop:** Stop fades out gently. Hold it to switch every locked button off at once.
 
@@ -38,18 +38,17 @@ When you open Gliss, **Start a jam** offers six vibes (Night drive, Lo-fi, Anthe
 - Tap **Loop** to record 2, 4, 8 or 16 bars (tap the bars chip to change it). The loop keeps chords, the lead, the buttons you lock or hold, and filter pad, Space and Drive moves.
 - While it plays, tap a pad to swap the chord in that spot. **Loop A ▾** opens the loop menu:
   - **Overdub:** add buttons, lead and knob moves; tapping a button switches that layer on or off in the loop from that point.
-  - **Undo**, **Record / go to loop B**, **Chain** (A A B A, A B A B and more, played by itself), **Edit loop**, **Save as MIDI**, **Clear loop** (tap twice).
-- **Edit loop** (or tap the loop bar): each block is half a bar. Pick its chord, ▼ darker or ▲ brighter variation, Keep last, or Break (the end of the block goes quiet). Below that, switch layers on or off per block, remove the lead from a block, Clear lead, Clear moves or Double loop.
+  - **Undo**, **Record / go to loop B**, **Chain** (A A B A, A B A B and more, played by itself), **Edit loop**, **Clear loop** (tap twice).
+- **Edit loop** (or tap the loop bar): each block is half a bar. The Chords tab picks its chord, ▼ darker or ▲ brighter variation, Keep last, or Break (the end of the block goes quiet). The Layers tab switches layers on or off per block and removes the lead from a block. At the bottom: Clear lead, Clear moves, Double loop.
 - Each loop keeps its own sound, so B can sound different from A.
 - With **Loop repeats** set to vary a little (Shape › Chords), loops of 2 bars or more sometimes get a chord in their last half bar that pulls back to the start (a turnaround).
 
 **Shape page**
-- Scenes (Mirage, Lift, Full, Wild).
-- **Sound:** Sound preset (sets everything in one go), chord sound, lead sound, lead plays, ensemble, tape, voicing and stack.
-- **Chords:** when chords start and glide, how lines move, slide and swell shapes, before-chord moves, stab rhythm, loop repeats.
-- **Arp & bass:** arp sound, shape, speed, length (3, 5 or 7 steps drift across the beat), range, reese pattern, counter, filter move.
+- **Sound:** Sound preset (sets everything in one go; Mirage, Lift, Full and Wild also set motion, space and some buttons), chord sound, lead sound, lead plays, ensemble, tape, voicing and stack.
+- **Chords:** Arrive (how notes travel to each chord), when chords start and glide, how lines move, before-chord moves, stab style, loop repeats.
+- **Arp & bass:** arp sound, shape (including 3, 5 and 7-step patterns that drift across the beat), speed, range, reese pattern, counter.
 - Faders: Motion, Space, Detune, Bloom, Glide spread, Stab length, Lines one by one, Drive and Volume.
-- **Save / load:** four slots that keep the whole song (loops A and B, chain, hook, sounds, mixer). **Mixer:** a level for chords, arps, lead, reese, counter, sparkle and drums. **Help & tour.**
+- **Save:** four slots that keep the whole song (loops A and B, chain, hook, sounds, mixer). **Mixer:** a level for each layer. **Export:** record a WAV, save the loop as MIDI, or save / open the whole song as a `.gliss` file (safe outside the browser and movable to another device). **Help.**
 
 **Drums page**
 - Beat on/off, tap tempo, drum kit (Classic, 808, 909, Lo-fi, Brush) and fills.
@@ -62,7 +61,7 @@ On tablets in landscape, the Jam page stays on the left with Shape or Drums on t
 
 While playing, Gliss keeps the screen awake and gives a short buzz on pad taps where the browser allows it.
 
-A short tour runs the first time you open Gliss. You can see it again under Help & tour on the Shape page.
+A short tour runs the first time you open Gliss. You can see it again under Help on the Shape page.
 
 ## Tech
 
