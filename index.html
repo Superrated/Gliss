@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.874</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.875</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -917,8 +917,9 @@ function schedStep(s,t,dur){
     }
     if(queued>=0){
       let toB;if(qAt>=0)toB=Math.max(0,qAt-s);else{const q={bar:16,'2bar':32,beat:4,now:1}[P.quant]||16;toB=(q-(s%q))%q}
-      const wrap=loop&&loopSt==='play'&&qAt>=0&&(qAt-loop.start)%loop.len===0;
-      if(toB>0&&toB<=4&&!linDone&&(P.lin!=='off'||wrap)){linDone=true;leadIn(t,queued,toB*sd,toB,P.lin==='off'?'run':null)}
+      /* at the start of each loop pass the chords only breathe in gently (no quick note run), unless you chose something under Before chord */
+      const wrap=loop&&loopSt==='play'&&P.lvar!==false&&qAt>=0&&(qAt-loop.start)%loop.len===0;
+      if(toB>0&&toB<=4&&!linDone&&(P.lin!=='off'||wrap)){linDone=true;leadIn(t,queued,toB*sd,toB,P.lin==='off'?'swell':null)}
       if(toB===0){commit(t,queued,b);did=true;if(queue2>=0){queued=queue2;queue2=-1;qUser=true;qAt=s+(P.quant==='2bar'?16:8);preStarted=false;uiQ.push({t,f:paint})}}
       else if(!preStarted&&toB<=P.pre){glideLines(t,queued,toB*sd);preStarted=true}
     }
