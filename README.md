@@ -28,7 +28,7 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
 - **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change, with a different ending every second time. Hold Hook for a suggested hook. Tap again to let it go.
 - **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held. Hold and Vary share one row: tap the small HOLD / VARY tabs to switch (a tab lights up when something on it is on).
-  - Add: Arp, Counter, Reese, Beat, Echo and Wash (hold to throw the chords into a long dub echo or a big reverb that rings on after you let go), Spark (bells)
+  - Add: Arp, Counter, Reese, Beat (tap to cycle full → light → off; light is a soft kick on the 1 with quiet hats), Echo and Wash (hold to throw the chords into a long dub echo or a big reverb that rings on after you let go), Spark (bells)
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords
   - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Pedal (the bass holds its note while the chords move), Breathe (each push spreads the notes apart or pulls them together)
 - **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab style: plucked rhythms or a filter that pumps, wobbles, gates or sweeps. A small dot on a button means holding it does something extra.
