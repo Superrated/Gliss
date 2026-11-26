@@ -29,13 +29,13 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (fill one with a ready-made set: Pop lift, Jazz turn, Cinematic, Dorian vamp, Dreamy fourths, Soul ballad, then change what you like) (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
-- **Strum** (next to Hook): tap for a fast harp run up the chord, hold for a run down. **Harp** is a lead sound that rings long with a gentle vibrato, and **Strip sustain** (Shape › Sound) sets how long strip notes ring: Short, Long or Endless.
+- **Strum** (under the pads, next to Hook): tap for a fast harp run up the chord, hold for a run down. **Auto strum** (Shape › Sound) plays a run on every chord change; Wide strings, Glass night, Sunday dusk, Lift and Rhodes lounge switch it on. **Harp** is a lead sound that rings long with a gentle vibrato, and **Strip sustain** (Shape › Sound) sets how long strip notes ring: Short, Long or Endless.
 - **Hook:** play freely on the lead strip; Gliss always remembers your last 2 bars. Played something nice? Tap **Hook** and it keeps repeating, following the chords (with a slightly different ending every second time). To redo it, play again and tap Hook again. Tap Hook without playing to stop it. Hold Hook for a suggested hook.
 - **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held.
   - Add: Arp, Counter, Reese, Beat (tap to cycle full → light → off; light is a soft kick on the 1 with quiet hats), Echo and Wash (hold to throw the chords into a long dub echo or a big reverb that rings on after you let go), Spark (bells)
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords
   - Vary: Low only, Swell, Pulse top, One by one, Shimmer, Pedal (the bass holds its note while the chords move), Breathe (each push spreads the notes apart or pulls them together)
-- **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab style: plucked rhythms or a filter that pumps, wobbles, gates or sweeps. A small dot on a button means holding it does something extra.
+- Under the pads: **Lead** moves the strip an octave, **Lift ↑** moves the whole jam up a step at the next bar (hold for down), **Stab** sets the stab style: plucked rhythms or a filter that pumps, wobbles, gates or sweeps. A small dot on a button means holding it does something extra.
 - **Filter pad:** left–right sets the cutoff, up–down the resonance.
 - **Play / Stop:** Stop fades out gently. Hold it to switch every locked button off at once.
 
