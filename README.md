@@ -27,7 +27,7 @@ On iPhone, switch the silent switch off, or web audio may stay muted.
 - **Brighter / darker:** swipe a pad up for its brighter version, down for its darker one.
 - **Chord set (▾ left of the loop bar):** 14 sets of six chords, the key, and ✎ My set 1–4 to build your own (including 6/9, sus2, m7♭5, quartal and maj7♯5 chords).
 - **Lead strip:** slide across it to play notes that always fit the chord. Notes snap gently to the beat, and the chords make room for the lead. While the lead or a hook plays, the arp, counter and sparkle keep to their own ranges.
-- **Hook:** tap Hook and play a phrase on the strip; two bars are kept and repeat over every chord change, with a different ending every second time. Hold Hook for a suggested hook. Tap again to let it go.
+- **Hook:** play freely on the lead strip; Gliss always remembers your last 2 bars. Played something nice? Tap **Hook** and it keeps repeating, following the chords (with a slightly different ending every second time). To redo it, play again and tap Hook again. Tap Hook without playing to stop it. Hold Hook for a suggested hook.
 - **Add / Hold / Vary:** tap to switch on and leave on, hold to use only while held.
   - Add: Arp, Counter, Reese, Beat (tap to cycle full → light → off; light is a soft kick on the 1 with quiet hats), Echo and Wash (hold to throw the chords into a long dub echo or a big reverb that rings on after you let go), Spark (bells)
   - Hold: Freeze, Octave up, Smear, Darken, Stab, Softer, No chords

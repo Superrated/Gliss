@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 <body>
 <div class="app">
   <header>
-    <div class="logo">GLISS<small>experimental beta 0.873</small><small class="by">by Superrated</small></div>
+    <div class="logo">GLISS<small>experimental beta 0.874</small><small class="by">by Superrated</small></div>
     <div class="tabs"><button class="chip on" data-pg="jam">Jam</button><button class="chip" data-pg="shape">Shape</button><button class="chip" data-pg="drums">Drums</button></div>
     <button class="chip" id="rec" hidden>Rec</button>
     <button class="chip on" id="play" aria-label="Play">▶ Play</button>
@@ -565,7 +565,7 @@ const lineLevel=i=>(!on('low')||i>=4||i===upRank()[0]?1:0)*duckF[i];
 function leadRoom(m,t){if(!ctx||!LN[0]||!LN[0].nodes)return;const up=[0,1,2,3],top=up.reduce((a,b)=>LN[b].midi>LN[a].midi?b:a,0);
   for(let i=0;i<6;i++){let f=1;if(m!=null&&i<4){const d=Math.abs(LN[i].midi-m),pc=Math.min(d%12,12-d%12);if(i===top)f=.7;if((pc===1||pc===2)&&d<=14)f=.35}duckF[i]=f}
   applyVary(t)}
-const leadBusy=()=>leadM!=null||hook.st==='play';
+const leadBusy=()=>leadM!=null||hook.st==='play'||hook.st==='cap2';
 function applyVary(t,stagger){
   if(!ctx||!LN[0].nodes)return;const ur=upRank(),order=IDX.slice().sort((x,y)=>LN[x].midi-LN[y].midi),sd=60/P.bpm/4;
   LN.forEach((L,i)=>{const lv=lineLevel(i),g=L.nodes.mg.gain,r=order.indexOf(i);
@@ -896,9 +896,11 @@ function schedStep(s,t,dur){
     if(im.rb!==null&&im.rb!==undefined){const l=strumLad(),sg=Math.floor(im.rb*l.length);if(sg!==loopSeg){strumNote(l[sg],t,loopSeg>=0);loopSeg=sg}}else{if(loopSeg>=0&&ribLive===null)strumEnd(t);loopSeg=-1}
   }
   /* hook: two bars of lead strip, kept and repeated; the notes follow every chord change */
-  if(hook.st==='arm'&&ribLive!==null){hook.start=s-b;hook.st='rec';hook.rb=[];uiQ.push({t,f:paint})}
-  if(hook.st==='rec'){const o=s-hook.start;if(o<hook.len)hook.rb[o]=ribLive;else{hook.st='play';uiQ.push({t,f:()=>{paint();say('Hook kept. It repeats and follows the chords.')}})}}
-  if(hook.st==='play'){const o=((s-hook.start)%hook.len+hook.len)%hook.len,pass=Math.floor((s-hook.start)/hook.len);let rb=hook.rb[o];
+  /* the lead strip is always remembered for the last few bars, so Hook can keep what you just played */
+  capRing[s%64]={s,rb:ribLive};if(ribLive!==null)lastPlay=s;
+  if(hook.st==='cap'&&s>=hook.capEnd)uiQ.push({t,f:()=>hookTake(hook.capEnd)});
+  if(hook.st==='cap2'&&s>=hook.capEnd)uiQ.push({t,f:()=>hookTake(hook.capEnd)});
+  if((hook.st==='play'||hook.st==='cap2')&&s>=hook.start){const o=((s-hook.start)%hook.len+hook.len)%hook.len,pass=Math.floor((s-hook.start)/hook.len);let rb=hook.rb[o];
     if(rb!=null&&pass%2===1&&o>=hook.len*.6)rb=Math.max(0,Math.min(.999,rb+(o>=hook.len*.75?-.13:.07)));
     if(rb!=null&&ribLive===null&&loopSeg<0){const l=strumLad(),sg=Math.min(l.length-1,Math.floor(rb*l.length));if(sg!==hookSeg){strumNote(l[sg],t,hookSeg>=0);hookSeg=sg}}
     else if(hookSeg>=0){if(ribLive===null&&loopSeg<0)strumEnd(t);hookSeg=-1}}
@@ -1069,7 +1071,18 @@ function stop(){
 /* ---------- hand glide between pads ---------- */
 const padUnder=e=>{const el=document.elementFromPoint(e.clientX,e.clientY),pd=el&&el.closest('.pad');return pd?+pd.dataset.i:-1};
 let liftPend=0,lbank=[null,null],lslot=0,pendSlot=-1;
-let odState={},fTouch={},chain='',ci=0,hook={st:'off',start:0,len:32,rb:[]},hookSeg=-1;
+let odState={},fTouch={},chain='',ci=0,hook={st:'off',start:0,len:32,rb:[]},hookSeg=-1,capRing=new Array(64),lastPlay=-1e9;
+/* keep the bars of lead that end at 'end' (a bar line): 2 bars, or 1 if the first was empty; it starts repeating on the next bar line */
+function hookTake(end){const take=n=>{const r=[];for(let k=0;k<n;k++){const st=end-n+k,c=capRing[((st%64)+64)%64];r.push(c&&c.s===st?c.rb:null)}return r};
+  let rb=take(32);if(rb.slice(0,16).every(x=>x==null))rb=rb.slice(16);if(rb.every(x=>x==null)){hook.st=hook.st==='cap2'?'play':'off';paint();say('Nothing to keep there: play on the lead strip, then tap Hook.');return}
+  const nb=Math.ceil(step/16)*16;hook={st:'play',start:Math.max(end,nb),len:rb.length,rb,made:step};hookSeg=-1;paint();say('Hook kept: it repeats and follows the chords. Play again and tap Hook to redo it.')}
+function hookTap(){if(!playing){say('Start playing, play a phrase on the lead strip, then tap Hook.');return}
+  if(hook.st==='cap'||hook.st==='cap2'){hook.st=hook.st==='cap2'?'play':'off';paint();return}
+  if(hook.st==='play'&&!(lastPlay>hook.made)){hook={st:'off',start:0,len:32,rb:[]};if(ctx&&hookSeg>=0)strumEnd(ctx.currentTime);hookSeg=-1;say('Hook stopped.');paint();return}
+  if(lastPlay<step-48){say('Play something on the lead strip first, then tap Hook. Hold Hook for a suggestion.');return}
+  const bar=Math.floor(step/16)*16;
+  if(lastPlay>=bar){hook.capEnd=bar+16;hook.st=hook.st==='play'?'cap2':'cap';paint();say('Keeping your phrase at the end of this bar…')}
+  else hookTake(bar)}
 const AK=['filt','res','chd','space','drv'];
 const touching=k=>k==='filt'||k==='res'?xyDown:performance.now()-(fTouch[k]||0)<700;
 /* end of the first recording pass: keep only the knobs that really moved, and hand locked buttons over to the loop */
@@ -1085,7 +1098,7 @@ function suggestHook(){if(!playing)start();const r=(a,b)=>a+Math.floor(Math.rand
   const rb=new Array(32).fill(null),put=(bar,ons,ix)=>ons.forEach((o,i)=>{const end=i+1<ons.length?ons[i+1]:16,len=Math.max(1,Math.min(end-o,r(2,4)));
     for(let k=0;k<len;k++)if(o+k<16&&(k<end-o-(ix[i]===ix[i+1]?1:0)))rb[bar*16+o+k]=(ix[i]+.5)/L});
   put(0,rh,mot);const ans=mot.slice();const cut=Math.ceil(ans.length/2);for(let i=cut;i<ans.length;i++)ans[i]=Math.max(1,Math.min(13,ans[i]+pick([-2,-1,1,2])));ans[ans.length-1]=Math.max(1,mot[0]-pick([0,2,3]));
-  put(1,rh,ans);const s0=step+(16-step%16);hook={st:'play',start:s0,len:32,rb};hookSeg=-1;say('Suggested hook. Hold again for another one, tap Hook to stop.');paint()}
+  put(1,rh,ans);const s0=step+(16-step%16);hook={st:'play',start:s0,len:32,rb,made:step};hookSeg=-1;say('Suggested hook. Hold again for another one, tap Hook to stop.');paint()}
 function loopDone(){const lp=loop;if(!lp)return;lp.snd=snapSnd();lp.au={};const a0=lp.au0||[];
   AK.forEach((k,j)=>{let v=[],last=null;for(let o=0;o<lp.len;o++){if(a0[o])last=a0[o][j];v.push(last)}const f=v.find(x=>x!==null);if(f===undefined)return;v=v.map(x=>x===null?f:x);
     if(Math.max(...v)-Math.min(...v)>.02)lp.au[k]=v});delete lp.au0;
@@ -1207,7 +1220,7 @@ function paint(){const sgs=playing?suggest():[];
   $('#lead').style.setProperty('--n',strumLad().length);
   $('#beaton').textContent=on('beat')?'Beat is on':'Beat is off';$('#beaton').classList.toggle('on',on('beat'));
   const pl=playing&&!fading;$('#play').textContent=pl?'■ Stop':'▶ Play';$('#play').setAttribute('aria-label',pl?'Stop':'Play');$('#play').classList.toggle('on',!pl);$('#play').classList.toggle('stop',pl);
-  $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='arm'?'Hook…':hook.st==='rec'?'● Hook':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='arm'||hook.st==='rec');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent='Stab '+o[1].split(' ')[0]+' ▾'}
+  $('#arrbtn').textContent=(ARR.find(a=>a[0]===P.arr)||ARR[0])[1]+'  ▾';{const o=CYC.srhy[1].find(x=>x[0]===P.srhy)||CYC.srhy[1][0];$('#hook').textContent=hook.st==='cap'||hook.st==='cap2'?'Hook…':'Hook';$('#hook').classList.toggle('on',hook.st==='play');$('#hook').classList.toggle('arm',hook.st==='cap'||hook.st==='cap2');$('#lift').textContent=liftPend>0?'Lift…':liftPend<0?'Drop…':(innerWidth<440?'Lift':'Lift ↑');$('#lift').classList.toggle('on',!!liftPend);$('#qbtn').textContent={bar:'1 bar','2bar':'2 bars',beat:'Beat',now:'Now'}[P.quant]||'1 bar';$('#srbtn').textContent='Stab '+o[1].split(' ')[0]+' ▾'}
   document.querySelectorAll('.pb').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',!!latched[k]||!!held[k]||!!shots[k]);b.classList.toggle('lock',!!latched[k]);b.classList.toggle('lp',!!loopOn[k]&&!latched[k]&&!held[k]);b.classList.toggle('hold',!!held[k])});
   {const bb=document.querySelector('.pb[data-k=beat]');if(bb)bb.textContent=on('beat')&&P.blite?'LIGHT':'BEAT'}
   document.querySelectorAll('.hvt button').forEach(t=>{const g=+t.dataset.t;t.classList.toggle('lit',PUNCH.some(x=>x[3]===g&&on(x[0])))});
@@ -1313,7 +1326,7 @@ function build(){
   {const hb=$('#hook');let ht=0;hb._long=false;
     hb.addEventListener('pointerdown',()=>{hb._long=false;ht=setTimeout(()=>{hb._long=true;buzz(15);suggestHook()},550)});
     ['pointerup','pointercancel','pointerleave'].forEach(ev=>hb.addEventListener(ev,()=>clearTimeout(ht)))}
-  $('#hook').addEventListener('click',()=>{if($('#hook')._long){$('#hook')._long=false;return}if(hook.st==='off'){hook.st='arm';if(!playing)start();say('Play a phrase on the lead strip (2 bars), or hold Hook for a suggestion.')}else{hook.st='off';hook.rb=[];if(ctx&&hookSeg>=0)strumEnd(ctx.currentTime);hookSeg=-1}paint()});
+  $('#hook').addEventListener('click',()=>{if($('#hook')._long){$('#hook')._long=false;return}hookTap()});
   const showOct=()=>{const o=P.loct||0;$('#loct').textContent='Lead '+(o>0?'+1':o<0?'−1':'0');$('#loct').classList.toggle('on',!!o)};
   $('#loct').addEventListener('click',()=>{P.loct={0:12,12:-12,'-12':0}[P.loct||0];save();showOct();paint()});showOct();
   const DRUMK=['kit','fill'];$('#cyc').innerHTML=Object.keys(CYC).filter(k=>!DRUMK.includes(k)).map(k=>`<button id="cy-${k}"></button>`).join('');$('#cycD').innerHTML=DRUMK.map(k=>`<button id="cy-${k}"></button>`).join('');
@@ -1396,7 +1409,7 @@ function build(){
     $('#pbox').innerHTML='<h2>Arrive<button class="chip" id="pclose">Close</button></h2><div class="opt"><div>How the notes travel to each new chord</div></div><div class="seg">'+ARR.map(([v,n])=>`<button data-v="${v}" class="${P.arr===v?'on':''}">${n}</button>`).join('')+'</div>';
     $('#pick').classList.add('open');$('#pclose').addEventListener('click',()=>$('#pick').classList.remove('open'));
     $('#pbox .seg').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;P.arr=x.dataset.v;save();paint();$('#pick').classList.remove('open')})});
-  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="qstart">Start a jam…</button><button class="chip on" id="instH" hidden>⬇ Install as app</button><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Hold any button to read what it does. Buttons: quick tap locks on or off, hold to play only while held. Filled = locked on, outlined = the loop plays it, white ring = you are holding it. Chord pads: tap and the notes glide to the chord on the next bar (a tap just after the bar still counts). Tap a second pad while one waits for two chords in a bar (the second marked ½). Swipe up for the brighter version, down for the darker one. Chord set (left of the loop bar): sets, key, and ✎ My set 1–4 to build your own. Lead strip: slide to play notes that always fit; they snap gently to the beat and the chords make room for them. Hook keeps two bars of lead and repeats them, ending differently every second time; hold Hook for a suggested one. Pedal (Vary row) holds the bass note while the chords move. With Loop repeats on Vary a little, the last half bar of a loop of 2 bars or more sometimes gets a chord that pulls back to the start. The 1 bar / 2 bars button sets how long each chord lasts (two pads split it in half). Lead moves the strip an octave, Lift ↑ moves the jam up a step at the next bar (hold for down), Stab sets the stab rhythm. Loop: tap to record 2–16 bars (bars chip next to it). While it plays, tap a pad to swap a chord. Loop A ▾ opens the loop menu: Overdub, Undo, loop B, Chain (A A B A…), Edit loop, Save as MIDI, Clear. Tap the loop bar to edit: chords per half bar, darker or brighter versions, breaks, layers per block, clear lead or moves, double the loop. Shape: Sound / Chords / Arp & bass options (Sound preset sets everything at once, including Mirage, Lift, Full and Wild; Arrive is under Chords), faders, Save (four slots), Mixer, Export (WAV, MIDI, .gliss song file) and this help. A dot on a button means holding it does something extra. Drums: beat, kit, fills, step grid, tempo, swing and pump. Stop fades out; hold Play/Stop to switch every locked button off. Rec records a WAV. Start a jam picks a whole vibe in one tap.</div></div><div class="opt"><div style="color:var(--mute);font-size:11px">Gliss © 2026 Superrated · free for noncommercial use under the PolyForm Noncommercial License 1.0.0 (polyformproject.org/licenses/noncommercial/1.0.0).</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
+  $('#box').innerHTML='<h2>Help<button class="chip" id="close">Done</button></h2><div class="opt"><button class="chip" id="qstart">Start a jam…</button><button class="chip on" id="instH" hidden>⬇ Install as app</button><button class="chip" id="retour" style="justify-self:start">Show the tour again</button></div><div class="opt"><div>Hold any button to read what it does. Buttons: quick tap locks on or off, hold to play only while held. Filled = locked on, outlined = the loop plays it, white ring = you are holding it. Chord pads: tap and the notes glide to the chord on the next bar (a tap just after the bar still counts). Tap a second pad while one waits for two chords in a bar (the second marked ½). Swipe up for the brighter version, down for the darker one. Chord set (left of the loop bar): sets, key, and ✎ My set 1–4 to build your own. Lead strip: slide to play notes that always fit; they snap gently to the beat and the chords make room for them. Played something nice on the strip? Tap Hook to keep your last 2 bars (it ends differently every second time); play again and tap Hook to redo it, tap without playing to stop; hold Hook for a suggestion. Pedal (Vary row) holds the bass note while the chords move. With Loop repeats on Vary a little, the last half bar of a loop of 2 bars or more sometimes gets a chord that pulls back to the start. The 1 bar / 2 bars button sets how long each chord lasts (two pads split it in half). Lead moves the strip an octave, Lift ↑ moves the jam up a step at the next bar (hold for down), Stab sets the stab rhythm. Loop: tap to record 2–16 bars (bars chip next to it). While it plays, tap a pad to swap a chord. Loop A ▾ opens the loop menu: Overdub, Undo, loop B, Chain (A A B A…), Edit loop, Save as MIDI, Clear. Tap the loop bar to edit: chords per half bar, darker or brighter versions, breaks, layers per block, clear lead or moves, double the loop. Shape: Sound / Chords / Arp & bass options (Sound preset sets everything at once, including Mirage, Lift, Full and Wild; Arrive is under Chords), faders, Save (four slots), Mixer, Export (WAV, MIDI, .gliss song file) and this help. A dot on a button means holding it does something extra. Drums: beat, kit, fills, step grid, tempo, swing and pump. Stop fades out; hold Play/Stop to switch every locked button off. Rec records a WAV. Start a jam picks a whole vibe in one tap.</div></div><div class="opt"><div style="color:var(--mute);font-size:11px">Gliss © 2026 Superrated · free for noncommercial use under the PolyForm Noncommercial License 1.0.0 (polyformproject.org/licenses/noncommercial/1.0.0).</div></div>'+TUNE.map(([lab,k,type,a,b2,c])=>type==='grid'?`<div class="opt"><div>${lab}</div><div class="seg" id="gpre"><button data-v="four">4 on the floor</button><button data-v="break">Break</button><button data-v="half">Half-time</button><button data-v="clear">Clear</button></div><div class="dg" id="dg"></div></div>`:type==='range'
     ?`<div class="opt"><label for="t-${k}"><span>${lab}</span><output id="to-${k}"></output></label><input type="range" id="t-${k}" min="${a}" max="${b2}" step="${c}" value="${P[k]}"></div>`
     :`<div class="opt"><div>${lab}</div><div class="seg" data-k="${k}">${a.map(([v,n])=>`<button data-v="${v}">${n}</button>`).join('')}</div></div>`).join('');
   TUNE.forEach(([lab,k,type,a,b2])=>{
@@ -1456,7 +1469,7 @@ function build(){
       return (SETS[q.set]||SETS[0]).n+' · '+NOTE[q.key]+' · '+q.bpm+' bpm · '+(SOUNDS[q.snd]||SOUNDS.saw)[0]+(m.song?((m.song.bank[0]&&m.song.bank[1])?' · loops A+B':(m.song.bank[0]||m.song.bank[1])?' · loop':'')+(m.song.chain?' · '+m.song.chain:'')+(m.song.hook?' · hook':''):m.loop?' · loop':'')+(on?' · '+on:'')};
     const songData=()=>({P:JSON.parse(JSON.stringify(P)),lat:Object.keys(latched).filter(k=>latched[k]),flv:JSON.parse(JSON.stringify(FLV)),cur,when:Date.now(),
       loop:null,song:(()=>{const pk=x=>x?{len:x.len,ev:x.ev,mv:x.mv,im:x.im,au:x.au||{},brk:x.brk||{},snd:x.snd||null}:null,bank=[lbank[0],lbank[1]];
-        bank[lslot]=loop&&loopSt==='play'?loop:lbank[lslot];return{bank:bank.map(pk),lslot,chain,hook:hook.st==='play'?{len:hook.len,rb:hook.rb}:null}})()});
+        bank[lslot]=loop&&loopSt==='play'?loop:lbank[lslot];return{bank:bank.map(pk),lslot,chain,hook:hook.st==='play'||hook.st==='cap2'?{len:hook.len,rb:hook.rb}:null}})()});
     const store=i=>{const a=rd();a[i]=songData();wr(a);say('Saved in slot '+(i+1)+'.')};
     const load=i=>songLoad(rd()[i],'Loaded slot '+(i+1)+'.');
     const songLoad=(m,msg)=>{if(!m||!m.P)return false;Object.assign(P,m.P);Object.keys(latched).forEach(k=>delete latched[k]);m.lat.forEach(k=>latched[k]=true);
@@ -1466,7 +1479,7 @@ function build(){
       const nb=step-(step%16)+16,mk=L=>L?{start:nb,len:L.len,ev:L.ev,mv:L.mv||[],im:L.im||[],au:L.au||{},brk:L.brk||{},snd:L.snd||null}:null;
       clearLoop();lbank=[null,null];lslot=0;pendSlot=-1;chain='';ci=0;undoSt=[];hook={st:'off',start:0,len:32,rb:[]};hookSeg=-1;
       if(m.song){const g=m.song;lbank=g.bank.map(mk);lslot=g.lslot||0;chain=g.chain||'';ci=Math.max(0,chain.indexOf('AB'[lslot]));
-        if(lbank[lslot]){loop=lbank[lslot];loopSt='play'}if(g.hook)hook={st:'play',start:nb,len:g.hook.len,rb:g.hook.rb}}
+        if(lbank[lslot]){loop=lbank[lslot];loopSt='play'}if(g.hook)hook={st:'play',start:nb,len:g.hook.len,rb:g.hook.rb,made:step}}
       else if(m.loop){loop=mk(m.loop);lbank[0]=loop;loopSt='play'}
       UIR.forEach(f=>f());if(window.setHV)setHV();save();paint();say(msg);return true};
     window.songData=songData;window.songLoad=songLoad;
@@ -1610,7 +1623,7 @@ const TOUR=[
   ['Welcome to Gliss','Tap a chord pad to start. Tap another pad and all the notes glide to it: the pad fills up while it waits and flashes when the chord lands.','#pads','jam'],
   ['Brighter, darker, two at once','Swipe a pad up for a brighter version of its chord, down for a darker one. Tap two pads quickly for two chords in one bar (the second is marked ½).','#pads','jam'],
   ['Under the pads','Lead moves the lead strip an octave. Lift moves everything up a step (hold for down). 1 bar / 2 bars sets how long each chord lasts. Stab picks how the Stab button chops the chords.','.jrow','jam'],
-  ['Play a lead','Slide across this strip to play notes that always fit the chord. Hook keeps two bars of what you play and repeats it; hold Hook for a suggested one.','#lead','jam'],
+  ['Play a lead','Slide across this strip to play notes that always fit the chord. Played something nice? Tap Hook: your last 2 bars repeat and follow the chords. To redo it, play again and tap Hook again; tap Hook without playing to stop. Hold Hook for a suggested one.','#lead','jam'],
   ['Add, hold, vary','Tap a button to lock it on, hold it to use it only while held. Beat cycles full, light and off. Hold Echo or Wash to throw the chords into a long echo or reverb. Hold and Vary each have their own row.','#punchJ','jam'],
   ['Filter pad','Drag left or right to make everything darker or brighter, and up for a more resonant sound. It stays where you leave it.','#xyp','jam'],
   ['Shape the sound','Sound presets set a whole sound in one tap, and you can save your own. Sound, Chords and Arp & bass hold the details. At the bottom: Save, Mixer and Export (WAV, MIDI, song file).','#shsec','shape'],
